@@ -27,6 +27,18 @@ jobs:
       - name: Pytest
         run: uv run pytest -v --cov=lexagent --cov-report=term-missing
 
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+      - name: Install project
+        run: uv sync --extra dev
+      - name: Canonical retrieval eval
+        run: make eval
+
   docs-build:
     runs-on: ubuntu-latest
     steps:
@@ -53,8 +65,9 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install dependencies
         run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
       - name: Build
         run: npm run build
-      # Phase 0: no Playwright E2E yet — the skeleton page connects to a
-      # running backend that is not available in CI. E2E tests will be added
-      # once the real ask endpoint is wired in Phase 2.
+      - name: Run E2E smoke tests
+        run: npx playwright test
