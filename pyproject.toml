@@ -1,0 +1,110 @@
+[project]
+name = "lexagent"
+version = "0.1.0"
+description = "A6 — LexAgent: grounded rental-law reasoning over statute and synthetic precedent"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "langgraph>=0.2",
+    "langchain-core>=0.3",
+    "langchain-openai>=0.2",
+    "langchain-qdrant>=0.2",
+    "qdrant-client>=1.12",
+    "sse-starlette>=2.1",
+    "structlog>=24.4",
+    "slowapi>=0.1.9",
+    "httpx>=0.27",
+    "truststore>=0.9",
+    "zarreh-agentkit",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.7",
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
+    "import-linter>=2.1",
+    "detect-secrets>=1.5",
+    "pre-commit>=4.0",
+    "types-requests",
+    "respx>=0.23",
+]
+docs = [
+    "mkdocs>=1.6",
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.27",
+    "mkdocs-gen-files>=0.5",
+    "mkdocs-literate-nav>=0.6",
+    "mkdocs-glightbox>=0.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lexagent"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "TID"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+explicit_package_bases = true
+files = ["src", "evals", "tests"]
+
+[[tool.mypy.overrides]]
+module = "qdrant_client.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.importlinter]
+root_package = "lexagent"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layering: api -> graph -> {agents,chains,tools,retrieval} -> schemas/settings"
+type = "layers"
+layers = [
+    "lexagent.api",
+    "lexagent.graph",
+    "lexagent.tools",
+    "lexagent.retrieval",
+    "lexagent.schemas",
+]
+
+[[tool.importlinter.contracts]]
+name = "chains never import nodes"
+type = "forbidden"
+source_modules = ["lexagent.graph.chains"]
+forbidden_modules = ["lexagent.graph.nodes"]
+
+[[tool.importlinter.contracts]]
+name = "tools never import graph"
+type = "forbidden"
+source_modules = ["lexagent.tools"]
+forbidden_modules = ["lexagent.graph"]
+
+[[tool.importlinter.contracts]]
+name = "no DSPy or DeepEval outside evals"
+type = "forbidden"
+source_modules = ["lexagent"]
+forbidden_modules = ["dspy", "deepeval"]
+
+[tool.uv.sources]
+zarreh-agentkit = { git = "https://github.com/zarreh/zarreh_agentkit.git", tag = "v0.2.0" }
