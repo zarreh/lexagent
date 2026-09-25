@@ -18,6 +18,7 @@ class Settings(AgentSettings):
     statute_collection: str = "lexagent_statutes"
     precedent_collection: str = "lexagent_precedents"
 
+    run_store_path: str = "data/runs.db"
     max_request_body_bytes: int = 2 * 1024 * 1024  # 2 MiB
 
 

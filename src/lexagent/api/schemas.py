@@ -14,3 +14,14 @@ class AskRequest(BaseModel):
 class AskResponse(BaseModel):
     id: str
     status: str
+
+
+class QueryResponse(BaseModel):
+    id: str
+    question: str
+    status: str
+    created_at: str
+    updated_at: str
+    outcome_kind: str | None
+    answer: dict[str, object] | None
+    error: str | None

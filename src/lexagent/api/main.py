@@ -4,7 +4,7 @@ from slowapi.errors import RateLimitExceeded
 
 from lexagent.api.middleware import MaxBodySizeMiddleware
 from lexagent.api.rate_limit import limiter
-from lexagent.api.routes import ask, health
+from lexagent.api.routes import ask, health, queries
 from lexagent.observability import configure_logging
 from lexagent.settings import get_settings
 
@@ -18,3 +18,4 @@ app.add_middleware(MaxBodySizeMiddleware, max_body_bytes=settings.max_request_bo
 
 app.include_router(health.router)
 app.include_router(ask.router)
+app.include_router(queries.router)
