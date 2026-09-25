@@ -12,17 +12,27 @@ with traceable sources — or refuses when the question is outside scope.
 
 ## Status
 
-Phase 0 walking skeleton: FastAPI + trivial echo graph + SSE + Next.js UI,
-with the full A2 toolchain (ruff, mypy --strict, import-linter, pytest,
-MkDocs, Docker compose, GitHub Actions).
+`base` complete through Phase 5:
+
+- Phase 0: walking skeleton (FastAPI + echo graph + SSE + Next.js UI)
+- Phase 1: seeded TX/CA statute corpus + synthetic precedent corpus
+- Phase 2: full LangGraph reasoning loop — parse, dual-corpus retrieval, validate, reason, claim extraction, citation verification, publish/refuse/budget
+- Phase 3: `/queries` REST API with SQLite run persistence and SSE streaming
+- Phase 4: Next.js query console with live trace timeline and answer panel
+- Phase 5: canonical retrieval eval harness + Playwright smoke tests
+
+All quality gates green: `make lint typecheck imports test eval`, docs strict,
+frontend build + e2e. Not deployed publicly yet.
 
 ## Running it
 
 ```bash
 uv sync --extra dev
 cp .env.example .env   # fill in your own OpenAI API key
-make test
+make test              # backend tests
+make eval              # canonical retrieval recall eval
 make dev               # http://localhost:8000/healthz
+cd frontend && npm install && npm run dev   # http://localhost:3000
 ```
 
 ## Layout
