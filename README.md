@@ -12,7 +12,7 @@ with traceable sources — or refuses when the question is outside scope.
 
 ## Status
 
-`base` complete through Phase 5:
+`base` complete:
 
 - Phase 0: walking skeleton (FastAPI + echo graph + SSE + Next.js UI)
 - Phase 1: seeded TX/CA statute corpus + synthetic precedent corpus
@@ -20,11 +20,16 @@ with traceable sources — or refuses when the question is outside scope.
 - Phase 3: `/queries` REST API with SQLite run persistence and SSE streaming
 - Phase 4: Next.js query console with live trace timeline and answer panel
 - Phase 5: canonical retrieval eval harness + Playwright smoke tests
+- Phase 6: GitHub Actions CI for lint/type/test/eval/docs/frontend-e2e
+- Phase 7: Docker build + compose verified; production compose with Caddy
+- Phase 8: docs finalised
 
 All quality gates green: `make lint typecheck imports test eval`, docs strict,
-frontend build + e2e. Not deployed publicly yet.
+frontend build + e2e, Docker compose up. Not deployed publicly yet.
 
 ## Running it
+
+### Local development
 
 ```bash
 uv sync --extra dev
@@ -34,6 +39,18 @@ make eval              # canonical retrieval recall eval
 make dev               # http://localhost:8000/healthz
 cd frontend && npm install && npm run dev   # http://localhost:3000
 ```
+
+### Production stack (Docker + Caddy)
+
+```bash
+cp .env.example .env   # fill in real secrets
+cd frontend && npm install && npm run build   # exports static site to frontend/dist
+cd ..
+docker compose -f compose.prod.yaml up -d      # http://localhost
+```
+
+For a real domain, replace `:80` in `Caddyfile` with `lexagent.zarreh.ai` and
+remove `auto_https off` so Caddy provisions TLS.
 
 ## Layout
 
