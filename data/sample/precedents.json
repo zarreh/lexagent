@@ -1,0 +1,154 @@
+[
+  {
+    "case_id": "SYN-0001",
+    "jurisdiction": "TX",
+    "issue": "security deposit refund",
+    "facts": "Tenant vacated after a one-year lease and provided a forwarding address.Landlord kept the entire $1,200 deposit for carpet cleaning and minor wallscuffs.",
+    "holding": "Landlord must return the deposit within 30 days and may only deductactual damages beyond normal wear and tear. Tenant awarded the full depositplus costs.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0002",
+    "jurisdiction": "TX",
+    "issue": "eviction notice",
+    "facts": "Landlord posted a three-day oral notice to vacate for nonpayment andimmediately filed eviction.",
+    "holding": "Oral notice does not satisfy Section 24.005. Eviction dismissed for lackof written notice to vacate.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0003",
+    "jurisdiction": "TX",
+    "issue": "habitability repair",
+    "facts": "Tenant reported a broken heater in January. Landlord did nothing for threeweeks.",
+    "holding": "Tenant's notice was adequate; landlord's failure to repair materiallyaffected health and safety. Tenant entitled to repair-and-deduct and partialrent abatement.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0004",
+    "jurisdiction": "TX",
+    "issue": "landlord entry",
+    "facts": "Landlord entered repeatedly without notice to show the unit, including oncewhile tenant was asleep.",
+    "holding": "Entry without reasonable notice violated Section 92.0081 absent emergencyor abandonment. Tenant awarded nominal damages.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0005",
+    "jurisdiction": "TX",
+    "issue": "retaliatory eviction",
+    "facts": "Tenant complained to the city about code violations. One week laterlandlord increased rent by 25%.",
+    "holding": "Rent increase shortly after tenant's good-faith complaint creates apresumption of retaliation under Section 92.331.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0006",
+    "jurisdiction": "TX",
+    "issue": "rent increase",
+    "facts": "Month-to-month tenant received one week's notice of a rent increase.",
+    "holding": "One week is not reasonable notice; landlord must provide at least onerental period's notice.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0007",
+    "jurisdiction": "TX",
+    "issue": "early termination",
+    "facts": "Tenant broke a six-month lease after two months for a job relocation andmitigated by finding a replacement tenant.",
+    "holding": "Tenant's mitigation effort limits landlord's damages to actual lost rentand reasonable re-letting costs.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0008",
+    "jurisdiction": "TX",
+    "issue": "tenant duty to maintain",
+    "facts": "Tenant intentionally clogged a sink and refused to report it, causing waterdamage.",
+    "holding": "Tenant is liable for willful or negligent damage beyond ordinary wear andtear.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0009",
+    "jurisdiction": "CA",
+    "issue": "security deposit refund",
+    "facts": "Tenant moved out and received no itemized statement. Landlord returned $100of a $2,000 deposit 45 days later.",
+    "holding": "Landlord violated Section 1950.5 by failing to provide an itemizedstatement within 21 days. Tenant entitled to full refund of remainingdeposit.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0010",
+    "jurisdiction": "CA",
+    "issue": "habitability repair",
+    "facts": "Roof leaked for two months; landlord ignored written notices. Tenantwithheld rent.",
+    "holding": "Tenant may use repair-and-deduct or rent withholding for substantialhabitability defects after reasonable notice.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0011",
+    "jurisdiction": "CA",
+    "issue": "retaliatory eviction",
+    "facts": "After tenant organized a tenants' association, landlord served a 30-daynotice to terminate a month-to-month tenancy.",
+    "holding": "Termination within 180 days of tenant's lawful organizing activity raisesa rebuttable presumption of retaliation under Section 1942.5.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0012",
+    "jurisdiction": "CA",
+    "issue": "landlord entry",
+    "facts": "Landlord entered to make repairs with 48 hours' written notice duringbusiness hours.",
+    "holding": "Entry complied with Section 1954: reasonable written notice, normalbusiness hours, and a permitted purpose.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0013",
+    "jurisdiction": "CA",
+    "issue": "rent increase",
+    "facts": "Tenant received a 10-day notice of a rent increase in a city without rentcontrol.",
+    "holding": "State law does not cap rent increases where no local rent controlapplies, but reasonable notice is required; 10 days is likely insufficientfor a month-to-month tenancy.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0014",
+    "jurisdiction": "CA",
+    "issue": "eviction notice",
+    "facts": "Landlord gave a 30-day notice to vacate after tenant resided for 14 months.",
+    "holding": "For a tenant of one year or more, Section 1946.1 requires 60 days'written notice. Notice is invalid.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0015",
+    "jurisdiction": "CA",
+    "issue": "early termination",
+    "facts": "Tenant terminated a month-to-month tenancy with 15 days' notice afterresiding for six months.",
+    "holding": "Tenant must give at least 30 days' written notice under Section 1946.1.Tenant may owe rent for the notice period.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0016",
+    "jurisdiction": "CA",
+    "issue": "tenant duty to maintain",
+    "facts": "Tenant repeatedly flushed inappropriate items, causing plumbing backups.",
+    "holding": "Tenant's conduct constituted negligent destruction; landlord may recoverrepair costs.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0017",
+    "jurisdiction": "TX",
+    "issue": "security deposit refund",
+    "facts": "Generic TX facts for security deposit refund.",
+    "holding": "Generic TX holding emphasizing security deposit refund principles.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0018",
+    "jurisdiction": "TX",
+    "issue": "habitability repair",
+    "facts": "Generic TX facts for habitability repair.",
+    "holding": "Generic TX holding emphasizing habitability repair principles.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0019",
+    "jurisdiction": "CA",
+    "issue": "retaliatory eviction",
+    "facts": "Generic CA facts for retaliatory eviction.",
+    "holding": "Generic CA holding emphasizing retaliatory eviction principles.",
+    "synthetic": true
+  }
+]
