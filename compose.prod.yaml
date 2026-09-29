@@ -3,6 +3,10 @@ services:
     build: .
     env_file:
       - .env
+    environment:
+      LEXAGENT_QDRANT_URL: http://qdrant:6333
+    depends_on:
+      - qdrant
     volumes:
       - ./data:/app/data
     healthcheck:
@@ -21,3 +25,11 @@ services:
     depends_on:
       api:
         condition: service_healthy
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.4
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+volumes:
+  qdrant_data:

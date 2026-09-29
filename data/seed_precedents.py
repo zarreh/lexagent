@@ -54,48 +54,48 @@ def _tx_precedents() -> list[PrecedentSummary]:
             case_id=_case_id(1),
             jurisdiction="TX",
             issue="security deposit refund",
-            facts="Tenant vacated after a one-year lease and provided a forwarding address."
-            "Landlord kept the entire $1,200 deposit for carpet cleaning and minor wall"
+            facts="Tenant vacated after a one-year lease and provided a forwarding address. "
+            "Landlord kept the entire $1,200 deposit for carpet cleaning and minor wall "
             "scuffs.",
-            holding="Landlord must return the deposit within 30 days and may only deduct"
-            "actual damages beyond normal wear and tear. Tenant awarded the full deposit"
+            holding="Landlord must return the deposit within 30 days and may only deduct "
+            "actual damages beyond normal wear and tear. Tenant awarded the full deposit "
             "plus costs.",
         ),
         PrecedentSummary(
             case_id=_case_id(2),
             jurisdiction="TX",
             issue="eviction notice",
-            facts="Landlord posted a three-day oral notice to vacate for nonpayment and"
+            facts="Landlord posted a three-day oral notice to vacate for nonpayment and "
             "immediately filed eviction.",
-            holding="Oral notice does not satisfy Section 24.005. Eviction dismissed for lack"
+            holding="Oral notice does not satisfy Section 24.005. Eviction dismissed for lack "
             "of written notice to vacate.",
         ),
         PrecedentSummary(
             case_id=_case_id(3),
             jurisdiction="TX",
             issue="habitability repair",
-            facts="Tenant reported a broken heater in January. Landlord did nothing for three"
+            facts="Tenant reported a broken heater in January. Landlord did nothing for three "
             "weeks.",
-            holding="Tenant's notice was adequate; landlord's failure to repair materially"
-            "affected health and safety. Tenant entitled to repair-and-deduct and partial"
+            holding="Tenant's notice was adequate; landlord's failure to repair materially "
+            "affected health and safety. Tenant entitled to repair-and-deduct and partial "
             "rent abatement.",
         ),
         PrecedentSummary(
             case_id=_case_id(4),
             jurisdiction="TX",
             issue="landlord entry",
-            facts="Landlord entered repeatedly without notice to show the unit, including once"
+            facts="Landlord entered repeatedly without notice to show the unit, including once "
             "while tenant was asleep.",
-            holding="Entry without reasonable notice violated Section 92.0081 absent emergency"
+            holding="Entry without reasonable notice violated Section 92.0081 absent emergency "
             "or abandonment. Tenant awarded nominal damages.",
         ),
         PrecedentSummary(
             case_id=_case_id(5),
             jurisdiction="TX",
             issue="retaliatory eviction",
-            facts="Tenant complained to the city about code violations. One week later"
+            facts="Tenant complained to the city about code violations. One week later "
             "landlord increased rent by 25%.",
-            holding="Rent increase shortly after tenant's good-faith complaint creates a"
+            holding="Rent increase shortly after tenant's good-faith complaint creates a "
             "presumption of retaliation under Section 92.331.",
         ),
         PrecedentSummary(
@@ -103,25 +103,25 @@ def _tx_precedents() -> list[PrecedentSummary]:
             jurisdiction="TX",
             issue="rent increase",
             facts="Month-to-month tenant received one week's notice of a rent increase.",
-            holding="One week is not reasonable notice; landlord must provide at least one"
+            holding="One week is not reasonable notice; landlord must provide at least one "
             "rental period's notice.",
         ),
         PrecedentSummary(
             case_id=_case_id(7),
             jurisdiction="TX",
             issue="early termination",
-            facts="Tenant broke a six-month lease after two months for a job relocation and"
+            facts="Tenant broke a six-month lease after two months for a job relocation and "
             "mitigated by finding a replacement tenant.",
-            holding="Tenant's mitigation effort limits landlord's damages to actual lost rent"
+            holding="Tenant's mitigation effort limits landlord's damages to actual lost rent "
             "and reasonable re-letting costs.",
         ),
         PrecedentSummary(
             case_id=_case_id(8),
             jurisdiction="TX",
             issue="tenant duty to maintain",
-            facts="Tenant intentionally clogged a sink and refused to report it, causing water"
+            facts="Tenant intentionally clogged a sink and refused to report it, causing water "
             "damage.",
-            holding="Tenant is liable for willful or negligent damage beyond ordinary wear and"
+            holding="Tenant is liable for willful or negligent damage beyond ordinary wear and "
             "tear.",
         ),
     ]
@@ -133,47 +133,47 @@ def _ca_precedents() -> list[PrecedentSummary]:
             case_id=_case_id(9),
             jurisdiction="CA",
             issue="security deposit refund",
-            facts="Tenant moved out and received no itemized statement. Landlord returned $100"
+            facts="Tenant moved out and received no itemized statement. Landlord returned $100 "
             "of a $2,000 deposit 45 days later.",
-            holding="Landlord violated Section 1950.5 by failing to provide an itemized"
-            "statement within 21 days. Tenant entitled to full refund of remaining"
+            holding="Landlord violated Section 1950.5 by failing to provide an itemized "
+            "statement within 21 days. Tenant entitled to full refund of remaining "
             "deposit.",
         ),
         PrecedentSummary(
             case_id=_case_id(10),
             jurisdiction="CA",
             issue="habitability repair",
-            facts="Roof leaked for two months; landlord ignored written notices. Tenant"
+            facts="Roof leaked for two months; landlord ignored written notices. Tenant "
             "withheld rent.",
-            holding="Tenant may use repair-and-deduct or rent withholding for substantial"
+            holding="Tenant may use repair-and-deduct or rent withholding for substantial "
             "habitability defects after reasonable notice.",
         ),
         PrecedentSummary(
             case_id=_case_id(11),
             jurisdiction="CA",
             issue="retaliatory eviction",
-            facts="After tenant organized a tenants' association, landlord served a 30-day"
+            facts="After tenant organized a tenants' association, landlord served a 30-day "
             "notice to terminate a month-to-month tenancy.",
-            holding="Termination within 180 days of tenant's lawful organizing activity raises"
+            holding="Termination within 180 days of tenant's lawful organizing activity raises "
             "a rebuttable presumption of retaliation under Section 1942.5.",
         ),
         PrecedentSummary(
             case_id=_case_id(12),
             jurisdiction="CA",
             issue="landlord entry",
-            facts="Landlord entered to make repairs with 48 hours' written notice during"
+            facts="Landlord entered to make repairs with 48 hours' written notice during "
             "business hours.",
-            holding="Entry complied with Section 1954: reasonable written notice, normal"
+            holding="Entry complied with Section 1954: reasonable written notice, normal "
             "business hours, and a permitted purpose.",
         ),
         PrecedentSummary(
             case_id=_case_id(13),
             jurisdiction="CA",
             issue="rent increase",
-            facts="Tenant received a 10-day notice of a rent increase in a city without rent"
+            facts="Tenant received a 10-day notice of a rent increase in a city without rent "
             "control.",
-            holding="State law does not cap rent increases where no local rent control"
-            "applies, but reasonable notice is required; 10 days is likely insufficient"
+            holding="State law does not cap rent increases where no local rent control "
+            "applies, but reasonable notice is required; 10 days is likely insufficient "
             "for a month-to-month tenancy.",
         ),
         PrecedentSummary(
@@ -181,16 +181,16 @@ def _ca_precedents() -> list[PrecedentSummary]:
             jurisdiction="CA",
             issue="eviction notice",
             facts="Landlord gave a 30-day notice to vacate after tenant resided for 14 months.",
-            holding="For a tenant of one year or more, Section 1946.1 requires 60 days'"
+            holding="For a tenant of one year or more, Section 1946.1 requires 60 days' "
             "written notice. Notice is invalid.",
         ),
         PrecedentSummary(
             case_id=_case_id(15),
             jurisdiction="CA",
             issue="early termination",
-            facts="Tenant terminated a month-to-month tenancy with 15 days' notice after"
+            facts="Tenant terminated a month-to-month tenancy with 15 days' notice after "
             "residing for six months.",
-            holding="Tenant must give at least 30 days' written notice under Section 1946.1."
+            holding="Tenant must give at least 30 days' written notice under Section 1946.1. "
             "Tenant may owe rent for the notice period.",
         ),
         PrecedentSummary(
@@ -198,7 +198,7 @@ def _ca_precedents() -> list[PrecedentSummary]:
             jurisdiction="CA",
             issue="tenant duty to maintain",
             facts="Tenant repeatedly flushed inappropriate items, causing plumbing backups.",
-            holding="Tenant's conduct constituted negligent destruction; landlord may recover"
+            holding="Tenant's conduct constituted negligent destruction; landlord may recover "
             "repair costs.",
         ),
     ]

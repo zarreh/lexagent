@@ -13,15 +13,21 @@ from __future__ import annotations
 import json
 import os
 import re
-from collections.abc import Sequence
 from pathlib import Path
 from typing import Literal, Protocol
 
+from langchain_core.embeddings import Embeddings
 from langchain_openai import OpenAIEmbeddings
 from langchain_qdrant import QdrantVectorStore
+from pydantic import SecretStr
 from qdrant_client import QdrantClient
+from qdrant_client.http.models import Distance, FieldCondition, Filter, MatchValue, VectorParams
 
+from lexagent.observability import get_logger
 from lexagent.schemas.legal import RetrievedSource
+from lexagent.settings import Settings
+
+logger = get_logger(__name__)
 
 
 class CorpusStore(Protocol):
@@ -30,6 +36,22 @@ class CorpusStore(Protocol):
     def search(
         self, query: str, jurisdiction: str, corpus: str, top_k: int = 4
     ) -> list[RetrievedSource]: ...
+
+
+def _record_to_source(record: dict[str, str], corpus: str) -> RetrievedSource | None:
+    juris = record.get("jurisdiction", "")
+    if juris not in ("TX", "CA"):
+        return None
+    juris_lit: Literal["TX", "CA"] = juris  # type: ignore[assignment]
+    corpus_lit: Literal["statute", "precedent"] = "statute" if corpus == "statute" else "precedent"
+    text = record.get("text") or f"{record.get('facts', '')}\n\n{record.get('holding', '')}"
+    return RetrievedSource(
+        source_id=record.get("id") or record.get("case_id", ""),
+        corpus=corpus_lit,
+        jurisdiction=juris_lit,
+        title=record.get("title") or record.get("issue", ""),
+        text=text,
+    )
 
 
 class LocalCorpusStore:
@@ -77,83 +99,129 @@ class LocalCorpusStore:
             title = record.get("title", "")
             facts = record.get("facts", "")
             holding = record.get("holding", "")
-            score = self._score(query, f"{title} {text} {facts} {holding}")
+            issue = record.get("issue", "")
+            score = self._score(query, f"{title} {issue} {text} {facts} {holding}")
             if score > 0:
                 scored.append((score, record))
         scored.sort(key=lambda x: x[0], reverse=True)
         results: list[RetrievedSource] = []
         for _, record in scored[:top_k]:
-            text = record.get("text", "")
-            juris_val = record.get("jurisdiction", jurisdiction)
-            if juris_val not in ("TX", "CA"):
-                continue
-            juris_lit: Literal["TX", "CA"] = juris_val  # type: ignore[assignment]
-            corpus_lit: Literal["statute", "precedent"] = (
-                "statute" if corpus == "statute" else "precedent"
-            )
-            display_text = text if text else f"{facts}\n\n{holding}"
-            results.append(
-                RetrievedSource(
-                    source_id=record.get("id") or record.get("case_id", ""),
-                    corpus=corpus_lit,
-                    jurisdiction=juris_lit,
-                    title=record.get("title", ""),
-                    text=display_text,
-                )
-            )
+            source = _record_to_source(record, corpus)
+            if source is not None:
+                results.append(source)
         return results
+
+    def records(self, corpus: str) -> list[dict[str, str]]:
+        return self._statutes if corpus == "statute" else self._precedents
 
 
 class QdrantCorpusStore:
-    """Semantic search over Qdrant collections."""
+    """Semantic search over one Qdrant collection per corpus."""
 
     def __init__(
         self,
         client: QdrantClient,
-        embeddings: OpenAIEmbeddings,
+        embeddings: Embeddings,
         statute_collection: str,
         precedent_collection: str,
     ) -> None:
-        self._statute_store = QdrantVectorStore(
-            client=client,
-            collection_name=statute_collection,
-            embedding=embeddings,
-        )
-        self._precedent_store = QdrantVectorStore(
-            client=client,
-            collection_name=precedent_collection,
-            embedding=embeddings,
-        )
-
-    def _to_sources(self, docs: Sequence[object], corpus: str) -> list[RetrievedSource]:
-        results: list[RetrievedSource] = []
-        for doc in docs:
-            metadata = getattr(doc, "metadata", {})
-            text = getattr(doc, "page_content", "")
-            juris: str = metadata.get("jurisdiction", "unknown")
-            corpus_lit: Literal["statute", "precedent"] = corpus  # type: ignore[assignment]
-            juris_lit: Literal["TX", "CA"] = juris if juris in ("TX", "CA") else "TX"  # type: ignore[assignment]
-            results.append(
-                RetrievedSource(
-                    source_id=metadata.get("id") or metadata.get("case_id", ""),
-                    corpus=corpus_lit,
-                    jurisdiction=juris_lit,
-                    title=metadata.get("title", ""),
-                    text=text,
-                )
-            )
-        return results
+        self._stores = {
+            "statute": QdrantVectorStore(
+                client=client, collection_name=statute_collection, embedding=embeddings
+            ),
+            "precedent": QdrantVectorStore(
+                client=client, collection_name=precedent_collection, embedding=embeddings
+            ),
+        }
 
     def search(
         self, query: str, jurisdiction: str, corpus: str, top_k: int = 4
     ) -> list[RetrievedSource]:
-        store = self._statute_store if corpus == "statute" else self._precedent_store
         filter_ = None
         if jurisdiction != "unknown":
-            from qdrant_client.http.models import FieldCondition, Filter, MatchValue
-
+            # langchain-qdrant nests document metadata under the "metadata" payload key.
             filter_ = Filter(
-                must=[FieldCondition(key="jurisdiction", match=MatchValue(value=jurisdiction))]
+                must=[
+                    FieldCondition(
+                        key="metadata.jurisdiction", match=MatchValue(value=jurisdiction)
+                    )
+                ]
             )
-        docs = store.similarity_search(query, k=top_k, filter=filter_)
-        return self._to_sources(docs, corpus)
+        docs = self._stores[corpus if corpus in self._stores else "statute"].similarity_search(
+            query, k=top_k, filter=filter_
+        )
+        sources: list[RetrievedSource] = []
+        for doc in docs:
+            record = {**doc.metadata, "text": doc.page_content}
+            source = _record_to_source(record, corpus)
+            if source is not None:
+                sources.append(source)
+        return sources
+
+
+def _index_collection(
+    client: QdrantClient,
+    embeddings: Embeddings,
+    name: str,
+    records: list[dict[str, str]],
+    corpus: str,
+) -> None:
+    """Create and fill a collection unless it already holds this many points."""
+    if client.collection_exists(name) and client.count(name).count == len(records):
+        return
+    if client.collection_exists(name):
+        client.delete_collection(name)
+    client.create_collection(
+        name,
+        vectors_config=VectorParams(
+            size=len(embeddings.embed_query("dim")), distance=Distance.COSINE
+        ),
+    )
+    texts: list[str] = []
+    metadatas: list[dict[str, str]] = []
+    for record in records:
+        source = _record_to_source(record, corpus)
+        if source is None:
+            continue
+        texts.append(f"{source.title}\n{source.text}")
+        metadatas.append(
+            {"id": source.source_id, "jurisdiction": source.jurisdiction, "title": source.title}
+        )
+    QdrantVectorStore(client=client, collection_name=name, embedding=embeddings).add_texts(
+        texts=texts, metadatas=metadatas
+    )
+
+
+def build_store(settings: Settings) -> CorpusStore:
+    """Semantic Qdrant store when reachable and embeddable, else the keyword store."""
+    local = LocalCorpusStore()
+    if not settings.openai_api_key:
+        return local
+    try:
+        client = QdrantClient(
+            url=settings.qdrant_url,
+            api_key=settings.qdrant_api_key or None,
+            timeout=10,
+            check_compatibility=False,
+        )
+        embeddings = OpenAIEmbeddings(
+            model="text-embedding-3-small", api_key=SecretStr(settings.openai_api_key)
+        )
+        _index_collection(
+            client, embeddings, settings.statute_collection, local.records("statute"), "statute"
+        )
+        _index_collection(
+            client,
+            embeddings,
+            settings.precedent_collection,
+            local.records("precedent"),
+            "precedent",
+        )
+        store = QdrantCorpusStore(
+            client, embeddings, settings.statute_collection, settings.precedent_collection
+        )
+    except Exception:  # noqa: BLE001
+        logger.warning("qdrant_unavailable_using_keyword_store", exc_info=True)
+        return local
+    logger.info("using_qdrant_store", url=settings.qdrant_url)
+    return store

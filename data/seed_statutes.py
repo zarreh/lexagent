@@ -36,8 +36,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.001",
         title="Definitions",
-        text="In this chapter: (1) 'Dwelling' means one or more rooms rented for use as a"
-        "residence. (2) 'Landlord' means the owner or manager of a dwelling. (3) 'Tenant'"
+        text="In this chapter: (1) 'Dwelling' means one or more rooms rented for use as a "
+        "residence. (2) 'Landlord' means the owner or manager of a dwelling. (3) 'Tenant' "
         "means a person who is authorized by a lease to occupy a dwelling.",
     ),
     StatuteSection(
@@ -45,8 +45,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.101",
         title="Security Deposit",
-        text="At or before a landlord and a tenant enter into a residential lease agreement,"
-        "the landlord shall provide the tenant a written inventory and condition"
+        text="At or before a landlord and a tenant enter into a residential lease agreement, "
+        "the landlord shall provide the tenant a written inventory and condition "
         "statement.",
     ),
     StatuteSection(
@@ -54,8 +54,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.102",
         title="Retention of Security Deposit",
-        text="A landlord may not retain a security deposit to cover normal wear and tear. A"
-        "deduction must be for actual damages caused by the tenant's default or by the"
+        text="A landlord may not retain a security deposit to cover normal wear and tear. A "
+        "deduction must be for actual damages caused by the tenant's default or by the "
         "tenant's negligent or reckless conduct.",
     ),
     StatuteSection(
@@ -63,8 +63,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.103",
         title="Refund of Security Deposit",
-        text="A landlord shall refund a security deposit not later than the 30th day after the"
-        "date the tenant surrenders possession of the premises and provides a forwarding"
+        text="A landlord shall refund a security deposit not later than the 30th day after the "
+        "date the tenant surrenders possession of the premises and provides a forwarding "
         "address.",
     ),
     StatuteSection(
@@ -72,7 +72,7 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.104",
         title="Deduction From Security Deposit",
-        text="A landlord who deducts damages from a security deposit must provide to the"
+        text="A landlord who deducts damages from a security deposit must provide to the "
         "tenant a written description and itemized list of all deductions.",
     ),
     StatuteSection(
@@ -80,8 +80,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.052",
         title="Notice of Rent Increase",
-        text="A landlord must provide notice of a rent increase as required by the lease. If"
-        "the lease is silent, the landlord must give reasonable notice, which is presumed"
+        text="A landlord must provide notice of a rent increase as required by the lease. If "
+        "the lease is silent, the landlord must give reasonable notice, which is presumed "
         "to be at least one rental period.",
     ),
     StatuteSection(
@@ -89,8 +89,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.056",
         title="Repair Obligations",
-        text="A landlord shall make a diligent effort to repair or remedy a condition if: (1)"
-        "the tenant specifies the condition in a notice to the person to whom rent is"
+        text="A landlord shall make a diligent effort to repair or remedy a condition if: (1) "
+        "the tenant specifies the condition in a notice to the person to whom rent is "
         "normally paid; and (2) the tenant is current in rent payment.",
     ),
     StatuteSection(
@@ -98,8 +98,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.0581",
         title="Tenant Remedies for Landlord's Failure to Repair",
-        text="If a landlord fails to repair a condition that materially affects the physical"
-        "health or safety of an ordinary tenant, the tenant may terminate the lease,"
+        text="If a landlord fails to repair a condition that materially affects the physical "
+        "health or safety of an ordinary tenant, the tenant may terminate the lease, "
         "repair the condition and deduct the cost, or obtain judicial remedies.",
     ),
     StatuteSection(
@@ -107,8 +107,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.0081",
         title="Notice of Entry",
-        text="A landlord may enter a dwelling only at reasonable times and after reasonable"
-        "notice, except in cases of emergency or when the tenant has abandoned the"
+        text="A landlord may enter a dwelling only at reasonable times and after reasonable "
+        "notice, except in cases of emergency or when the tenant has abandoned the "
         "premises.",
     ),
     StatuteSection(
@@ -116,8 +116,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 92.331",
         title="Retaliation",
-        text="A landlord may not retaliate against a tenant by increasing rent, decreasing"
-        "services, or terminating a lease because the tenant has in good faith exercised a"
+        text="A landlord may not retaliate against a tenant by increasing rent, decreasing "
+        "services, or terminating a lease because the tenant has in good faith exercised a "
         "right or remedy under this chapter.",
     ),
     StatuteSection(
@@ -125,7 +125,7 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 91.001",
         title="Notice for Termination of Tenancy",
-        text="A monthly tenancy may be terminated by either the landlord or the tenant only on"
+        text="A monthly tenancy may be terminated by either the landlord or the tenant only on "
         "at least one month's written notice.",
     ),
     StatuteSection(
@@ -133,8 +133,8 @@ _TX_STATUTES: list[StatuteSection] = [
         jurisdiction="TX",
         code="Tex. Prop. Code § 24.005",
         title="Notice to Vacate Before Eviction",
-        text="A landlord may not file an eviction suit until the landlord has given written"
-        "notice to vacate the premises. The notice period is determined by the lease or,"
+        text="A landlord may not file an eviction suit until the landlord has given written "
+        "notice to vacate the premises. The notice period is determined by the lease or, "
         "if the lease is silent, by this section.",
     ),
 ]
@@ -145,7 +145,7 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1940.4",
         title="Tenant's Right to Attend School",
-        text="A landlord may not terminate a tenancy or otherwise penalize a tenant based on"
+        text="A landlord may not terminate a tenancy or otherwise penalize a tenant based on "
         "the enrollment of a tenant's child in a particular school.",
     ),
     StatuteSection(
@@ -153,8 +153,8 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1940.5",
         title="Application Screening Fee",
-        text="A landlord may charge an application screening fee only in an amount necessary"
-        "to reimburse the landlord for the actual cost of obtaining information about the"
+        text="A landlord may charge an application screening fee only in an amount necessary "
+        "to reimburse the landlord for the actual cost of obtaining information about the "
         "applicant.",
     ),
     StatuteSection(
@@ -162,9 +162,9 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1941",
         title="Standards of Habitability",
-        text="A dwelling shall be deemed untenantable for purposes of Section 1941 if it"
-        "substantially lacks any of the following affirmative standard characteristics:"
-        "effective waterproofing; plumbing; hot and cold running water; heating;"
+        text="A dwelling shall be deemed untenantable for purposes of Section 1941 if it "
+        "substantially lacks any of the following affirmative standard characteristics: "
+        "effective waterproofing; plumbing; hot and cold running water; heating; "
         "sanitation; and safety.",
     ),
     StatuteSection(
@@ -172,7 +172,7 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1941.1",
         title="Building Standards",
-        text="A dwelling shall be deemed untenantable if it does not comply with applicable"
+        text="A dwelling shall be deemed untenantable if it does not comply with applicable "
         "building standards that materially affect health and safety.",
     ),
     StatuteSection(
@@ -180,8 +180,8 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1941.2",
         title="Tenant's Duty to Maintain",
-        text="A tenant is responsible for keeping the premises clean and sanitary, properly"
-        "using all electrical, gas, and plumbing fixtures, and not willfully or"
+        text="A tenant is responsible for keeping the premises clean and sanitary, properly "
+        "using all electrical, gas, and plumbing fixtures, and not willfully or "
         "negligently destroying the premises.",
     ),
     StatuteSection(
@@ -189,7 +189,7 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1941.3",
         title="Door and Window Locks",
-        text="A landlord shall provide and maintain deadbolt locks and other security devices"
+        text="A landlord shall provide and maintain deadbolt locks and other security devices "
         "as required by this section.",
     ),
     StatuteSection(
@@ -197,8 +197,8 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1942",
         title="Repair and Deduct Remedy",
-        text="If within a reasonable time after notice the landlord fails to make repairs"
-        "necessary to habitability, the tenant may repair the defects and deduct the cost"
+        text="If within a reasonable time after notice the landlord fails to make repairs "
+        "necessary to habitability, the tenant may repair the defects and deduct the cost "
         "from the rent, not exceeding one month's rent.",
     ),
     StatuteSection(
@@ -206,8 +206,8 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1942.5",
         title="Retaliatory Eviction and Other Retaliatory Acts",
-        text="A landlord may not retaliate against a tenant by increasing rent, decreasing"
-        "services, or threatening to bring an action to recover possession because the"
+        text="A landlord may not retaliate against a tenant by increasing rent, decreasing "
+        "services, or threatening to bring an action to recover possession because the "
         "tenant has lawfully exercised rights under this chapter.",
     ),
     StatuteSection(
@@ -215,8 +215,8 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1950.5",
         title="Security Deposits",
-        text="A landlord may demand a security deposit. Within 21 calendar days after the"
-        "tenant has vacated the premises, the landlord shall furnish the tenant a copy of"
+        text="A landlord may demand a security deposit. Within 21 calendar days after the "
+        "tenant has vacated the premises, the landlord shall furnish the tenant a copy of "
         "an itemized statement and return any remaining portion of the security deposit.",
     ),
     StatuteSection(
@@ -224,8 +224,8 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1946",
         title="Notice for Termination of Tenancy",
-        text="A hiring of real property, for a term not specified by the parties, is deemed to"
-        "be renewed at the end of the term implied by the conduct of the parties unless"
+        text="A hiring of real property, for a term not specified by the parties, is deemed to "
+        "be renewed at the end of the term implied by the conduct of the parties unless "
         "either party gives notice as provided by this section.",
     ),
     StatuteSection(
@@ -233,8 +233,8 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1946.1",
         title="Notice Requirements for Tenant",
-        text="A tenant shall give written notice at least 30 days prior to the proposed"
-        "termination date when the tenant has resided in the premises for less than one"
+        text="A tenant shall give written notice at least 30 days prior to the proposed "
+        "termination date when the tenant has resided in the premises for less than one "
         "year, and at least 60 days when the tenant has resided for one year or more.",
     ),
     StatuteSection(
@@ -242,9 +242,9 @@ _CA_STATUTES: list[StatuteSection] = [
         jurisdiction="CA",
         code="Cal. Civ. Code § 1954",
         title="Entry by Landlord or Agent",
-        text="A landlord may enter the dwelling unit only in the following cases: in case of"
-        "emergency; to make necessary repairs; to show the unit to prospective tenants or"
-        "purchasers; or pursuant to court order. Entry shall be during normal business"
+        text="A landlord may enter the dwelling unit only in the following cases: in case of "
+        "emergency; to make necessary repairs; to show the unit to prospective tenants or "
+        "purchasers; or pursuant to court order. Entry shall be during normal business "
         "hours and after reasonable written notice.",
     ),
 ]

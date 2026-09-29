@@ -34,10 +34,11 @@ def _recall(expected: list[str], retrieved_ids: list[str]) -> float:
 def evaluate_retrieval(
     store: CorpusStore,
     top_k: int = 4,
+    scenarios: list[RetrievalScenario] = CANONICAL_SCENARIOS,
 ) -> MetricsReport:
-    """Evaluate the local corpus store against the canonical scenarios."""
+    """Evaluate a corpus store against a scenario set."""
     results: list[ScenarioResult] = []
-    for scenario in CANONICAL_SCENARIOS:
+    for scenario in scenarios:
         statutes = store.search(scenario.question, scenario.jurisdiction, "statute", top_k=top_k)
         precedents = store.search(
             scenario.question, scenario.jurisdiction, "precedent", top_k=top_k

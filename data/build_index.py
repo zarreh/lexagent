@@ -17,8 +17,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 
-from data.seed_precedents import PrecedentSummary, all_precedents
-from data.seed_statutes import StatuteSection, all_statutes
+from data.seed_precedents import all_precedents
+from data.seed_statutes import all_statutes
 
 
 class _Settings(BaseSettings):
@@ -86,13 +86,13 @@ def build_precedent_index(
 def write_sample_index(client: QdrantClient, output_dir: Path) -> None:
     """Persist a tiny JSON snapshot of the collections for inspection."""
     output_dir.mkdir(parents=True, exist_ok=True)
-    statutes = [StatuteSection(**d).model_dump() for d in all_statutes()]
-    precedents = [PrecedentSummary(**d).model_dump() for d in all_precedents()]
+    statutes = [s.model_dump() for s in all_statutes()]
+    precedents = [p.model_dump() for p in all_precedents()]
     with (output_dir / "statutes.jsonl").open("w", encoding="utf-8") as f:
         for record in statutes:
-            f.write(json.dumps(record) + "\n")
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
     with (output_dir / "precedents.json").open("w", encoding="utf-8") as f:
-        json.dump(precedents, f, indent=2)
+        json.dump(precedents, f, indent=2, ensure_ascii=False)
 
 
 def main() -> None:

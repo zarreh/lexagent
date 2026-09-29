@@ -1,13 +1,16 @@
-.PHONY: run dev test lint typecheck imports eval up down data docs docs-assets frontend-dev frontend-build frontend-types frontend-e2e
+.PHONY: qdrant run dev test lint typecheck imports eval up down data docs docs-assets frontend-dev frontend-build frontend-types frontend-e2e
 
-run:
+qdrant:
+	docker compose up -d qdrant
+
+run: qdrant
 	@echo "UI: http://localhost:3000   (API: http://localhost:8000/docs)"
 	@trap 'kill 0' EXIT INT TERM; \
 	uv run uvicorn lexagent.api.main:app --reload --reload-dir src --port 8000 & \
 	(cd frontend && npm run dev) & \
 	wait
 
-dev:
+dev: qdrant
 	uv run uvicorn lexagent.api.main:app --reload --reload-dir src --port 8000
 
 test:
@@ -35,7 +38,7 @@ down:
 data:
 	uv run python -m data.seed_statutes
 	uv run python -m data.seed_precedents
-	uv run python -m data.build_vector_store
+	uv run python -m data.build_index
 
 docs:
 	uv run mkdocs serve

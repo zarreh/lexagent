@@ -23,7 +23,7 @@ from lexagent.graph.nodes.retrieve import build_retrieve_node
 from lexagent.graph.nodes.validate_retrieval import build_validate_retrieval_node
 from lexagent.graph.nodes.verify_citations import build_verify_citations_node
 from lexagent.graph.policies import build_fast_model, build_reasoning_model
-from lexagent.retrieval.store import CorpusStore, LocalCorpusStore
+from lexagent.retrieval.store import CorpusStore, build_store
 from lexagent.schemas.state import LexAgentState, SkeletonState
 from lexagent.settings import Settings
 
@@ -48,7 +48,7 @@ def build_lexagent_graph(
 ) -> LexAgentGraph:
     """The full dual-corpus legal-reasoning graph."""
     if store is None:
-        store = LocalCorpusStore()
+        store = build_store(settings)
 
     fast_model = build_fast_model(settings)
     reasoning_model = build_reasoning_model(settings)

@@ -59,3 +59,36 @@ CANONICAL_SCENARIOS: list[RetrievalScenario] = [
         expected_precedents=["SYN-0004"],
     ),
 ]
+
+
+# Everyday phrasing that shares few words with the statute text; probes semantic recall.
+PARAPHRASE_SCENARIOS: list[RetrievalScenario] = [
+    RetrievalScenario(
+        id="heater-tx",
+        question="My landlord keeps ignoring me about the broken heater.",
+        jurisdiction="TX",
+        expected_statutes=["tx-prop-92.056", "tx-prop-92.0581"],
+        expected_precedents=[],
+    ),
+    RetrievalScenario(
+        id="walk-in-ca",
+        question="Can the owner just walk into my apartment whenever he wants?",
+        jurisdiction="CA",
+        expected_statutes=["ca-civ-1954"],
+        expected_precedents=[],
+    ),
+    RetrievalScenario(
+        id="kicked-out-ca",
+        question="They threw me out right after I complained about mold.",
+        jurisdiction="CA",
+        expected_statutes=["ca-civ-1942.5"],
+        expected_precedents=[],
+    ),
+    RetrievalScenario(
+        id="money-back-tx",
+        question="How soon do I get my money back after I move out?",
+        jurisdiction="TX",
+        expected_statutes=["tx-prop-92.103"],
+        expected_precedents=[],
+    ),
+]

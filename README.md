@@ -36,13 +36,15 @@ uv sync --extra dev
 cp .env.example .env   # fill in your own OpenAI API key
 (cd frontend && npm install)
 make test              # backend tests
-make eval              # canonical retrieval recall eval
+make eval              # retrieval recall: keyword vs semantic (needs Qdrant for the latter)
 make run               # API + UI together -> open http://localhost:3000
 make dev               # API only (http://localhost:8000/docs, no UI)
 ```
 
-Retrieval defaults to the bundled keyword store (`LocalCorpusStore`); the
-Qdrant-backed store is implemented but not wired into the default app.
+Retrieval is semantic: statutes and precedents are embedded (OpenAI
+`text-embedding-3-small`) into two Qdrant collections, indexed automatically on
+first start. `make run`/`make dev` start Qdrant via Docker; if Qdrant or the
+OpenAI key is unavailable the app falls back to the keyword store.
 
 ### Production stack (Docker + Caddy)
 
