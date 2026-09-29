@@ -133,7 +133,7 @@ export function LexAgentConsole() {
         </div>
         <div className="mt-4 flex items-center justify-between">
           <p className="text-xs text-neutral-500">
-            Public-domain statutes only (TX Property Code Ch. 92, CA Civil Code §§1940–1954).
+            Public-domain statute excerpts only (TX Property Code chs. 24, 91, 92; CA Civil Code §§1941–1954).
           </p>
           <button
             type="button"

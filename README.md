@@ -27,6 +27,15 @@ with traceable sources — or refuses when the question is outside scope.
 All quality gates green: `make lint typecheck imports test eval`, docs strict,
 frontend build + e2e, Docker compose up. Not deployed publicly yet.
 
+## Corpus
+
+Statutes are verbatim excerpts of the official text (retrieved 2026-09-29 from
+statutes.capitol.texas.gov and leginfo.legislature.ca.gov): TX Property Code chs. 24, 91, 92
+and CA Civil Code §§1941–1954. It is a curated subset, not a complete or current legal
+reference. Precedents are synthetic case summaries written against those sections
+(`synthetic: true`). `make data` regenerates the sample files from
+`data/seed_statutes.py` and `data/seed_precedents.py` (and rebuilds the Qdrant index).
+
 ## Running it
 
 ### Local development

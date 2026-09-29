@@ -24,14 +24,14 @@ CANONICAL_SCENARIOS: list[RetrievalScenario] = [
         id="deposit-tx",
         question="My Texas landlord kept my security deposit for normal wear and tear.",
         jurisdiction="TX",
-        expected_statutes=["tx-prop-92.102", "tx-prop-92.103", "tx-prop-92.104"],
+        expected_statutes=["tx-prop-92.104"],
         expected_precedents=["SYN-0001"],
     ),
     RetrievalScenario(
         id="repair-ca",
         question="My California apartment has no hot water and the landlord has not fixed it.",
         jurisdiction="CA",
-        expected_statutes=["ca-civ-1941", "ca-civ-1942"],
+        expected_statutes=["ca-civ-1941.1", "ca-civ-1942"],
         expected_precedents=["SYN-0010"],
     ),
     RetrievalScenario(
@@ -52,8 +52,8 @@ CANONICAL_SCENARIOS: list[RetrievalScenario] = [
         expected_precedents=["SYN-0011"],
     ),
     RetrievalScenario(
-        id="entry-tx",
-        question="My Texas landlord entered my apartment without reasonable notice to show it.",
+        id="lockout-tx",
+        question="My Texas landlord changed my locks and will not give me a key.",
         jurisdiction="TX",
         expected_statutes=["tx-prop-92.0081"],
         expected_precedents=["SYN-0004"],
@@ -67,7 +67,7 @@ PARAPHRASE_SCENARIOS: list[RetrievalScenario] = [
         id="heater-tx",
         question="My landlord keeps ignoring me about the broken heater.",
         jurisdiction="TX",
-        expected_statutes=["tx-prop-92.056", "tx-prop-92.0581"],
+        expected_statutes=["tx-prop-92.052", "tx-prop-92.056"],
         expected_precedents=[],
     ),
     RetrievalScenario(

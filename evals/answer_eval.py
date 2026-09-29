@@ -58,13 +58,13 @@ SCENARIOS = [
     AnswerScenario(
         "wear-tear-tx",
         "My Texas landlord kept my whole deposit for normal wear and tear. Is that allowed?",
-        ["tx-prop-92.102"],
-        ["A landlord may not retain a deposit for normal wear and tear"],
+        ["tx-prop-92.104"],
+        ["A landlord may not retain a deposit to cover normal wear and tear"],
     ),
     AnswerScenario(
         "heater-tx",
         "My landlord keeps ignoring me about the broken heater in Texas.",
-        ["tx-prop-92.056", "tx-prop-92.0581"],
+        ["tx-prop-92.052", "tx-prop-92.056"],
         [
             "The landlord must make a diligent effort to repair after notice if rent is current",
             "The tenant may terminate, repair and deduct, or seek judicial remedies",
@@ -73,7 +73,7 @@ SCENARIOS = [
     AnswerScenario(
         "hot-water-ca",
         "My California apartment has had no hot water for two weeks. What can I do?",
-        ["ca-civ-1941", "ca-civ-1942"],
+        ["ca-civ-1941.1", "ca-civ-1942"],
         [
             "No hot water is a habitability defect",
             "Repair and deduct is capped at one month's rent",
@@ -180,8 +180,17 @@ async def main() -> int:
         print("LEXAGENT_OPENAI_API_KEY is required for answer evals.")
         return 2
     graph = build_lexagent_graph(settings)
-    judge = ChatOpenAI(model=JUDGE_MODEL, temperature=0, api_key=SecretStr(settings.openai_api_key))
-    scores = await asyncio.gather(*(_run_one(graph, judge, s) for s in SCENARIOS))
+    judge = ChatOpenAI(
+        model=JUDGE_MODEL, temperature=0, max_retries=6, api_key=SecretStr(settings.openai_api_key)
+    )
+    # Small pool keeps the run under OpenAI's tokens-per-minute limits.
+    gate = asyncio.Semaphore(1)
+
+    async def run(scenario: AnswerScenario) -> Score:
+        async with gate:
+            return await _run_one(graph, judge, scenario)
+
+    scores = await asyncio.gather(*(run(s) for s in SCENARIOS))
 
     print(f"{'Scenario':<16} {'Outcome':>8} {'CiteRec':>8} {'Halluc':>7} {'Faith':>6} {'Facts':>6}")
     print("-" * 56)

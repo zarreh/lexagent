@@ -1,11 +1,15 @@
+# ruff: noqa: E501
 """Seed the statute corpus for LexAgent.
 
-The real TX Property Code Chapter 92 and CA Civil Code §§1940–1954 are
-public-domain statute text. This module loads curated excerpts of the sections
-most relevant to landlord-tenant Q&A. A production system would fetch live
-from the legislature websites; for base tier we ship a small, stable, manually
-curated snapshot under data/sample/ so the vector index is reproducible and
-CI does not depend on external HTML parsing.
+Sections are verbatim excerpts of the official text (subsections omitted for length are
+marked "[...]"), retrieved 2026-09-29 from:
+
+- Texas: https://statutes.capitol.texas.gov (Property Code chapters 24, 91, 92; current
+  through the 89th Legislature, 2nd Called Session, 2025)
+- California: https://leginfo.legislature.ca.gov (Civil Code, sections as amended through 2025)
+
+Statutes are public domain. This is a curated subset for research, not a complete or
+current legal reference; law changes, so verify against the official sources.
 """
 
 from __future__ import annotations
@@ -28,224 +32,325 @@ class StatuteSection(BaseModel):
         return f"# {self.code} — {self.title}\n\n{self.text}\n"
 
 
-# Curated subset used for the base-tier corpus. Source: public-domain statute
-# text from the Texas Legislature and California Legislative Information websites.
+def _tx(section: str, title: str, text: str) -> StatuteSection:
+    return StatuteSection(
+        id=f"tx-prop-{section}",
+        jurisdiction="TX",
+        code=f"Tex. Prop. Code § {section}",
+        title=title,
+        text=text.strip(),
+    )
+
+
+def _ca(section: str, title: str, text: str) -> StatuteSection:
+    return StatuteSection(
+        id=f"ca-civ-{section}",
+        jurisdiction="CA",
+        code=f"Cal. Civ. Code § {section}",
+        title=title,
+        text=text.strip(),
+    )
+
+
 _TX_STATUTES: list[StatuteSection] = [
-    StatuteSection(
-        id="tx-prop-92.001",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.001",
-        title="Definitions",
-        text="In this chapter: (1) 'Dwelling' means one or more rooms rented for use as a "
-        "residence. (2) 'Landlord' means the owner or manager of a dwelling. (3) 'Tenant' "
-        "means a person who is authorized by a lease to occupy a dwelling.",
+    _tx(
+        "24.005",
+        "Notice Required Before Filing Certain Eviction Suits",
+        """
+(a) If the occupant is a tenant under a written lease or oral rental agreement, the landlord must give a tenant who defaults or holds over beyond the end of the rental term or renewal period at least three days' written notice to vacate the premises before the landlord files a forcible detainer suit, unless the parties have contracted for a shorter or longer notice period in a written lease or agreement. In a forcible detainer suit against a tenant whose right of possession is terminated based solely on nonpayment of rent and who was not late or delinquent in paying rent to the landlord before the month in which the notice is given, written notice under this section shall be given in the form of a notice to pay rent or vacate. In a forcible detainer suit against a tenant whose right of possession is terminated based on nonpayment of rent and who was late or delinquent in paying rent to the landlord before the month in which the notice is given, written notice under this section may be given in the form of either a notice to pay rent or vacate or a notice to vacate. A landlord who files a forcible detainer suit on grounds that the tenant is holding over beyond the end of the rental term or renewal period must also comply with the tenancy termination requirements of Section 91.001.
+[...]
+(f-3) A notice required by this section must be delivered using at least one of the following methods: (1) mail, including first class mail, registered mail, certified mail, or a delivery service; (2) delivery to the inside of the premises, in a conspicuous place; (3) hand delivery to any tenant of the premises who is 16 years of age or older; or (4) if the parties have agreed in writing, electronic communication, including e-mail or other electronic means.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.101",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.101",
-        title="Security Deposit",
-        text="At or before a landlord and a tenant enter into a residential lease agreement, "
-        "the landlord shall provide the tenant a written inventory and condition "
-        "statement.",
+    _tx(
+        "91.001",
+        "Notice for Terminating Certain Tenancies",
+        """
+(a) A monthly tenancy or a tenancy from month to month may be terminated by the tenant or the landlord giving notice of termination to the other.
+(b) If a notice of termination is given under Subsection (a) and if the rent-paying period is at least one month, the tenancy terminates on whichever of the following days is the later: (1) the day given in the notice for termination; or (2) one month after the day on which the notice is given.
+(c) If a notice of termination is given under Subsection (a) and if the rent-paying period is less than a month, the tenancy terminates on whichever of the following days is the later: (1) the day given in the notice for termination; or (2) the day following the expiration of the period beginning on the day on which notice is given and extending for a number of days equal to the number of days in the rent-paying period.
+(d) If a tenancy terminates on a day that does not correspond to the beginning or end of a rent-paying period, the tenant is liable for rent only up to the date of termination.
+(e) Subsections (a), (b), (c), and (d) do not apply if: (1) a landlord and a tenant have agreed in an instrument signed by both parties on a different period of notice to terminate the tenancy or that no notice is required; or (2) there is a breach of contract recognized by law.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.102",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.102",
-        title="Retention of Security Deposit",
-        text="A landlord may not retain a security deposit to cover normal wear and tear. A "
-        "deduction must be for actual damages caused by the tenant's default or by the "
-        "tenant's negligent or reckless conduct.",
+    _tx(
+        "91.006",
+        "Landlord's Duty to Mitigate Damages",
+        """
+(a) A landlord has a duty to mitigate damages if a tenant abandons the leased premises in violation of the lease.
+(b) A provision of a lease that purports to waive a right or to exempt a landlord from a liability or duty under this section is void.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.103",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.103",
-        title="Refund of Security Deposit",
-        text="A landlord shall refund a security deposit not later than the 30th day after the "
-        "date the tenant surrenders possession of the premises and provides a forwarding "
-        "address.",
+    _tx(
+        "92.001",
+        "Definitions",
+        """
+Except as otherwise provided by this chapter, in this chapter:
+(1) "Dwelling" means one or more rooms rented for use as a permanent residence under a single lease to one or more tenants.
+(2) "Landlord" means the owner, lessor, or sublessor of a dwelling, but does not include a manager or agent of the landlord unless the manager or agent purports to be the owner, lessor, or sublessor in an oral or written lease.
+(3) "Lease" means any written or oral agreement between a landlord and tenant that establishes or modifies the terms, conditions, rules, or other provisions regarding the use and occupancy of a dwelling.
+(4) "Normal wear and tear" means deterioration that results from the intended use of a dwelling, including, for the purposes of Subchapters B and D, breakage or malfunction due to age or deteriorated condition, but the term does not include deterioration that results from negligence, carelessness, accident, or abuse of the premises, equipment, or chattels by the tenant, by a member of the tenant's household, or by a guest or invitee of the tenant.
+(5) "Premises" means a tenant's rental unit, any area or facility the lease authorizes the tenant to use, and the appurtenances, grounds, and facilities held out for the use of tenants generally.
+(6) "Tenant" means a person who is authorized by a lease to occupy a dwelling to the exclusion of others and, for the purposes of Subchapters D, E, and F, who is obligated under the lease to pay rent.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.104",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.104",
-        title="Deduction From Security Deposit",
-        text="A landlord who deducts damages from a security deposit must provide to the "
-        "tenant a written description and itemized list of all deductions.",
+    _tx(
+        "92.008",
+        "Interruption of Utilities",
+        """
+(a) A landlord or a landlord's agent may not interrupt or cause the interruption of utility service paid for directly to the utility company by a tenant unless the interruption results from bona fide repairs, construction, or an emergency.
+(b) Except as provided by this section, a landlord may not interrupt or cause the interruption of water, wastewater, gas, or electric service furnished to a tenant by the landlord as an incident of the tenancy or by other agreement unless the interruption results from bona fide repairs, construction, or an emergency.
+[...]
+(f) If a landlord or a landlord's agent violates this section, the tenant may: (1) either recover possession of the premises or terminate the lease; and (2) in addition to other remedies available under law, recover from the landlord an amount equal to the sum of the tenant's actual damages, one month's rent plus $1,000, reasonable attorney's fees, and court costs, less any delinquent rents or other sums for which the tenant is liable to the landlord.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.052",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.052",
-        title="Notice of Rent Increase",
-        text="A landlord must provide notice of a rent increase as required by the lease. If "
-        "the lease is silent, the landlord must give reasonable notice, which is presumed "
-        "to be at least one rental period.",
+    _tx(
+        "92.0081",
+        "Removal of Property and Exclusion of Residential Tenant",
+        """
+(a) A landlord may not remove a door, window, or attic hatchway cover or a lock, latch, hinge, hinge pin, doorknob, or other mechanism connected to a door, window, or attic hatchway cover from premises leased to a tenant or remove furniture, fixtures, or appliances furnished by the landlord from premises leased to a tenant unless the landlord removes the item for a bona fide repair or replacement. If a landlord removes any of the items listed in this subsection for a bona fide repair or replacement, the repair or replacement must be promptly performed.
+(b) A landlord may not intentionally prevent a tenant from entering the leased premises except by judicial process unless the exclusion results from: (1) bona fide repairs, construction, or an emergency; (2) removing the contents of premises abandoned by a tenant; or (3) changing the door locks on the door to the tenant's individual unit of a tenant who is delinquent in paying at least part of the rent.
+[...]
+(h) If a landlord violates this section, the tenant may: (1) either recover possession of the premises or terminate the lease; and (2) recover from the landlord a civil penalty of one month's rent plus $1,000, actual damages, court costs, and reasonable attorney's fees in an action to recover property damages, actual expenses, or civil penalties, less any delinquent rent or other sums for which the tenant is liable to the landlord.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.056",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.056",
-        title="Repair Obligations",
-        text="A landlord shall make a diligent effort to repair or remedy a condition if: (1) "
-        "the tenant specifies the condition in a notice to the person to whom rent is "
-        "normally paid; and (2) the tenant is current in rent payment.",
+    _tx(
+        "92.019",
+        "Late Payment of Rent; Fees",
+        """
+(a) A landlord may not collect from a tenant a late fee for failing to pay any portion of the tenant's rent unless: (1) notice of the fee is included in a written lease; (2) the fee is reasonable; and (3) any portion of the tenant's rent has remained unpaid two full days after the date the rent was originally due.
+(a-1) For purposes of this section, a late fee is considered reasonable if: (1) the late fee is not more than: (A) 12 percent of the amount of rent for the rental period under the lease for a dwelling located in a structure that contains not more than four dwelling units; or (B) 10 percent of the amount of rent for the rental period under the lease for a dwelling located in a structure that contains more than four dwelling units; or (2) the late fee is more than the applicable amount under Subdivision (1), but not more than uncertain damages to the landlord related to the late payment of rent, including direct or indirect expenses, direct or indirect costs, or overhead associated with the collection of late payment.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.0581",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.0581",
-        title="Tenant Remedies for Landlord's Failure to Repair",
-        text="If a landlord fails to repair a condition that materially affects the physical "
-        "health or safety of an ordinary tenant, the tenant may terminate the lease, "
-        "repair the condition and deduct the cost, or obtain judicial remedies.",
+    _tx(
+        "92.052",
+        "Landlord's Duty to Repair or Remedy",
+        """
+(a) A landlord shall make a diligent effort to repair or remedy a condition if: (1) the tenant specifies the condition in a notice to the person to whom or to the place where rent is normally paid; (2) the tenant is not delinquent in the payment of rent at the time notice is given; and (3) the condition: (A) materially affects the physical health or safety of an ordinary tenant; or (B) arises from the landlord's failure to provide and maintain in good operating condition a device to supply hot water of a minimum temperature of 120 degrees Fahrenheit.
+(b) Unless the condition was caused by normal wear and tear, the landlord does not have a duty during the lease term or a renewal or extension to repair or remedy a condition caused by: (1) the tenant; (2) a lawful occupant in the tenant's dwelling; (3) a member of the tenant's family; or (4) a guest or invitee of the tenant.
+[...]
+(d) The tenant's notice under Subsection (a) must be in writing only if the tenant's lease is in writing and requires written notice.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.0081",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.0081",
-        title="Notice of Entry",
-        text="A landlord may enter a dwelling only at reasonable times and after reasonable "
-        "notice, except in cases of emergency or when the tenant has abandoned the "
-        "premises.",
+    _tx(
+        "92.056",
+        "Landlord Liability and Tenant Remedies; Notice and Time for Repair",
+        """
+(b) A landlord is liable to a tenant as provided by this subchapter if: (1) the tenant has given the landlord notice to repair or remedy a condition by giving that notice to the person to whom or to the place where the tenant's rent is normally paid; (2) the condition materially affects the physical health or safety of an ordinary tenant; (3) the tenant has given the landlord a subsequent written notice to repair or remedy the condition after a reasonable time to repair or remedy the condition following the notice given under Subdivision (1) or the tenant has given the notice under Subdivision (1) by sending that notice by certified mail, return receipt requested, by registered mail, or by another form of mail that allows tracking of delivery from the United States Postal Service or a private delivery service; (4) the landlord has had a reasonable time to repair or remedy the condition after the landlord received the tenant's notice under Subdivision (1) and, if applicable, the tenant's subsequent notice under Subdivision (3); (5) the landlord has not made a diligent effort to repair or remedy the condition after the landlord received the tenant's notice under Subdivision (1) and, if applicable, the tenant's notice under Subdivision (3); and (6) the tenant was not delinquent in the payment of rent at the time any notice required by this subsection was given.
+[...]
+(d) For purposes of Subsection (b)(3) or (4), in determining whether a period of time is a reasonable time to repair or remedy a condition, there is a rebuttable presumption that seven days is a reasonable time. To rebut that presumption, the date on which the landlord received the tenant's notice, the severity and nature of the condition, and the reasonable availability of materials and labor and of utilities from a utility company must be considered.
+(e) Except as provided in Subsection (f), a tenant to whom a landlord is liable under Subsection (b) of this section may: (1) terminate the lease; (2) have the condition repaired or remedied according to Section 92.0561; (3) deduct from the tenant's rent, without necessity of judicial action, the cost of the repair or remedy according to Section 92.0561; and (4) obtain judicial remedies according to Section 92.0563.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-92.331",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 92.331",
-        title="Retaliation",
-        text="A landlord may not retaliate against a tenant by increasing rent, decreasing "
-        "services, or terminating a lease because the tenant has in good faith exercised a "
-        "right or remedy under this chapter.",
+    _tx(
+        "92.0561",
+        "Tenant's Repair and Deduct Remedies",
+        """
+(a) If the landlord is liable to the tenant under Section 92.056(b), the tenant may have the condition repaired or remedied and may deduct the cost from a subsequent rent payment as provided in this section.
+(b) The tenant's deduction for the cost of the repair or remedy may not exceed the amount of one month's rent under the lease or $500, whichever is greater. [...]
+(c) Repairs and deductions under this section may be made as often as necessary so long as the total repairs and deductions in any one month do not exceed one month's rent or $500, whichever is greater.
+(d) Repairs under this section may be made only if all of the following requirements are met: (1) The landlord has a duty to repair or remedy the condition under Section 92.052, and the duty has not been waived in a written lease by the tenant under Subsection (e) or (f) of Section 92.006. (2) The tenant has given notice to the landlord as required by Section 92.056(b)(1), and, if required, a subsequent notice under Section 92.056(b)(3), and at least one of those notices states that the tenant intends to repair or remedy the condition. The notice shall also contain a reasonable description of the intended repair or remedy. (3) Any one of the following events has occurred: (A) The landlord has failed to remedy the backup or overflow of raw sewage inside the tenant's dwelling or the flooding from broken pipes or natural drainage inside the dwelling. (B) The landlord has expressly or impliedly agreed in the lease to furnish potable water to the tenant's dwelling and the water service to the dwelling has totally ceased. (C) The landlord has expressly or impliedly agreed in the lease to furnish heating or cooling equipment; the equipment is producing inadequate heat or cooled air; and the landlord has been notified in writing by the appropriate local housing, building, or health official or other official having jurisdiction that the lack of heat or cooling materially affects the health or safety of an ordinary tenant. (D) The landlord has been notified in writing by the appropriate local housing, building, or health official or other official having jurisdiction that the condition materially affects the health or safety of an ordinary tenant.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-91.001",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 91.001",
-        title="Notice for Termination of Tenancy",
-        text="A monthly tenancy may be terminated by either the landlord or the tenant only on "
-        "at least one month's written notice.",
+    _tx(
+        "92.0563",
+        "Tenant's Judicial Remedies",
+        """
+(a) A tenant's judicial remedies under Section 92.056 shall include: (1) an order directing the landlord to take reasonable action to repair or remedy the condition; (2) an order reducing the tenant's rent, from the date of the first repair notice, in proportion to the reduced rental value resulting from the condition until the condition is repaired or remedied; (3) a judgment against the landlord for a civil penalty of one month's rent plus $500; (4) a judgment against the landlord for the amount of the tenant's actual damages; and (5) court costs and attorney's fees, excluding any attorney's fees for a cause of action for damages relating to a personal injury.
+""",
     ),
-    StatuteSection(
-        id="tx-prop-24.005",
-        jurisdiction="TX",
-        code="Tex. Prop. Code § 24.005",
-        title="Notice to Vacate Before Eviction",
-        text="A landlord may not file an eviction suit until the landlord has given written "
-        "notice to vacate the premises. The notice period is determined by the lease or, "
-        "if the lease is silent, by this section.",
+    _tx(
+        "92.102",
+        "Security Deposit",
+        """
+A security deposit is any advance of money, other than a rental application deposit or an advance payment of rent, that is intended primarily to secure performance under a lease of a dwelling that has been entered into by a landlord and a tenant.
+""",
+    ),
+    _tx(
+        "92.103",
+        "Obligation to Refund",
+        """
+(a) Except as provided by Section 92.107, the landlord shall refund a security deposit to the tenant on or before the 30th day after the date the tenant surrenders the premises.
+(b) A requirement that a tenant give advance notice of surrender as a condition for refunding the security deposit is effective only if the requirement is underlined or is printed in conspicuous bold print in the lease.
+(c) The tenant's claim to the security deposit takes priority over the claim of any creditor of the landlord, including a trustee in bankruptcy.
+""",
+    ),
+    _tx(
+        "92.104",
+        "Retention of Security Deposit; Accounting",
+        """
+(a) Before returning a security deposit, the landlord may deduct from the deposit damages and charges for which the tenant is legally liable under the lease or as a result of breaching the lease.
+(b) The landlord may not retain any portion of a security deposit to cover normal wear and tear.
+(c) If the landlord retains all or part of a security deposit under this section, the landlord shall give to the tenant the balance of the security deposit, if any, together with a written description and itemized list of all deductions. The landlord is not required to give the tenant a description and itemized list of deductions if: (1) the tenant owes rent when he surrenders possession of the premises; and (2) there is no controversy concerning the amount of rent owed.
+""",
+    ),
+    _tx(
+        "92.107",
+        "Tenant's Forwarding Address",
+        """
+(a) The landlord is not obligated to return a tenant's security deposit or give the tenant a written description of damages and charges until the tenant gives the landlord a written statement of the tenant's forwarding address for the purpose of refunding the security deposit.
+(b) The tenant does not forfeit the right to a refund of the security deposit or the right to receive a description of damages and charges merely for failing to give a forwarding address to the landlord.
+""",
+    ),
+    _tx(
+        "92.109",
+        "Liability of Landlord",
+        """
+(a) A landlord who in bad faith retains a security deposit in violation of this subchapter is liable for an amount equal to the sum of $100, three times the portion of the deposit wrongfully withheld, and the tenant's reasonable attorney's fees in a suit to recover the deposit.
+(b) A landlord who in bad faith does not provide a written description and itemized list of damages and charges in violation of this subchapter: (1) forfeits the right to withhold any portion of the security deposit or to bring suit against the tenant for damages to the premises; and (2) is liable for the tenant's reasonable attorney's fees in a suit to recover the deposit.
+(c) In an action brought by a tenant under this subchapter, the landlord has the burden of proving that the retention of any portion of the security deposit was reasonable.
+(d) A landlord who fails either to return a security deposit or to provide a written description and itemization of deductions on or before the 30th day after the date the tenant surrenders possession is presumed to have acted in bad faith.
+""",
+    ),
+    _tx(
+        "92.331",
+        "Retaliation by Landlord",
+        """
+(a) A landlord may not retaliate against a tenant by taking an action described by Subsection (b) because the tenant: (1) in good faith exercises or attempts to exercise against a landlord a right or remedy granted to the tenant by lease, municipal ordinance, or federal or state statute; (2) gives a landlord a notice to repair or exercise a remedy under this chapter; (3) complains to a governmental entity responsible for enforcing building or housing codes, a public utility, or a civic or nonprofit agency, and the tenant: (A) claims a building or housing code violation or utility problem; and (B) believes in good faith that the complaint is valid and that the violation or problem occurred; or (4) establishes, attempts to establish, or participates in a tenant organization.
+(b) A landlord may not, within six months after the date of the tenant's action under Subsection (a), retaliate against the tenant by: (1) filing an eviction proceeding, except for the grounds stated by Section 92.332; (2) depriving the tenant of the use of the premises, except for reasons authorized by law; (3) decreasing services to the tenant; (4) increasing the tenant's rent or terminating the tenant's lease; or (5) engaging, in bad faith, in a course of conduct that materially interferes with the tenant's rights under the tenant's lease.
+""",
+    ),
+    _tx(
+        "92.332",
+        "Nonretaliation",
+        """
+(a) The landlord is not liable for retaliation under this subchapter if the landlord proves that the action was not made for purposes of retaliation, nor is the landlord liable, unless the action violates a prior court order under Section 92.0563, for: (1) increasing rent under an escalation clause in a written lease for utilities, taxes, or insurance; or (2) increasing rent or reducing services as part of a pattern of rent increases or service reductions for an entire multidwelling project.
+(b) An eviction or lease termination based on the following circumstances, which are valid grounds for eviction or lease termination in any event, does not constitute retaliation: (1) the tenant is delinquent in rent when the landlord gives notice to vacate or files an eviction action; (2) the tenant, a member of the tenant's family, or a guest or invitee of the tenant intentionally damages property on the premises or by word or conduct threatens the personal safety of the landlord, the landlord's employees, or another tenant; (3) the tenant has materially breached the lease, other than by holding over, by an action such as violating written lease provisions prohibiting serious misconduct or criminal acts, except as provided by this section; (4) the tenant holds over after giving notice of termination or intent to vacate; [...]
+""",
+    ),
+    _tx(
+        "92.333",
+        "Tenant Remedies",
+        """
+In addition to other remedies provided by law, if a landlord retaliates against a tenant under this subchapter, the tenant may recover from the landlord a civil penalty of one month's rent plus $500, actual damages, court costs, and reasonable attorney's fees in an action for recovery of property damages, moving costs, actual expenses, civil penalties, or declaratory or injunctive relief, less any delinquent rents or other sums for which the tenant is liable to the landlord. [...]
+""",
     ),
 ]
 
 _CA_STATUTES: list[StatuteSection] = [
-    StatuteSection(
-        id="ca-civ-1940.4",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1940.4",
-        title="Tenant's Right to Attend School",
-        text="A landlord may not terminate a tenancy or otherwise penalize a tenant based on "
-        "the enrollment of a tenant's child in a particular school.",
+    _ca(
+        "1941",
+        "Lessor's Duty: Condition Fit for Occupation",
+        """
+The lessor of a building intended for the occupation of human beings must, in the absence of an agreement to the contrary, put it into a condition fit for such occupation, and repair all subsequent dilapidations thereof, which render it untenantable, except such as are mentioned in section nineteen hundred and twenty-nine.
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1940.5",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1940.5",
-        title="Application Screening Fee",
-        text="A landlord may charge an application screening fee only in an amount necessary "
-        "to reimburse the landlord for the actual cost of obtaining information about the "
-        "applicant.",
+    _ca(
+        "1941.1",
+        "Untenantable Dwelling; Affirmative Standard Characteristics",
+        """
+(a) A dwelling shall be deemed untenantable for purposes of Section 1941 if it substantially lacks any of the following affirmative standard characteristics or is a residential unit described in Section 17920.3 or 17920.10 of the Health and Safety Code:
+(1) Effective waterproofing and weather protection of roof and exterior walls, including unbroken windows and doors.
+(2) Plumbing or gas facilities that conformed to applicable law in effect at the time of installation, maintained in good working order.
+(3) A water supply approved under applicable law that is under the control of the tenant, capable of producing hot and cold running water, or a system that is under the control of the landlord, that produces hot and cold running water, furnished to appropriate fixtures, and connected to a sewage disposal system approved under applicable law.
+(4) Heating facilities that conformed with applicable law at the time of installation, maintained in good working order.
+(5) Electrical lighting, with wiring and electrical equipment that conformed with applicable law at the time of installation, maintained in good working order.
+(6) Building, grounds, and appurtenances at the time of the commencement of the lease or rental agreement, and all areas under control of the landlord, kept in every part clean, sanitary, and free from all accumulations of debris, filth, rubbish, garbage, rodents, and vermin.
+(7) An adequate number of appropriate receptacles for garbage and rubbish, in clean condition and good repair at the time of the commencement of the lease or rental agreement, with the landlord providing appropriate serviceable receptacles thereafter and being responsible for the clean condition and good repair of the receptacles under their control.
+(8) Floors, stairways, and railings maintained in good repair.
+[...]
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1941",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1941",
-        title="Standards of Habitability",
-        text="A dwelling shall be deemed untenantable for purposes of Section 1941 if it "
-        "substantially lacks any of the following affirmative standard characteristics: "
-        "effective waterproofing; plumbing; hot and cold running water; heating; "
-        "sanitation; and safety.",
+    _ca(
+        "1941.2",
+        "Tenant's Affirmative Obligations",
+        """
+(a) No duty on the part of the landlord to repair a dilapidation shall arise under Section 1941 or 1942 if the tenant is in substantial violation of any of the following affirmative obligations, provided the tenant’s violation contributes substantially to the existence of the dilapidation or interferes substantially with the landlord’s obligation under Section 1941 to effect the necessary repairs:
+(1) To keep that part of the premises which he occupies and uses clean and sanitary as the condition of the premises permits.
+(2) To dispose from his dwelling unit of all rubbish, garbage and other waste, in a clean and sanitary manner.
+(3) To properly use and operate all electrical, gas and plumbing fixtures and keep them as clean and sanitary as their condition permits.
+(4) Not to permit any person on the premises, with his permission, to willfully or wantonly destroy, deface, damage, impair or remove any part of the structure or dwelling unit or the facilities, equipment, or appurtenances thereto, nor himself do any such thing.
+(5) To occupy the premises as his abode, utilizing portions thereof for living, sleeping, cooking or dining purposes only which were respectively designed or intended to be used for such occupancies.
+(b) Paragraphs (1) and (2) of subdivision (a) shall not apply if the landlord has expressly agreed in writing to perform the act or acts mentioned therein.
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1941.1",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1941.1",
-        title="Building Standards",
-        text="A dwelling shall be deemed untenantable if it does not comply with applicable "
-        "building standards that materially affect health and safety.",
+    _ca(
+        "1942",
+        "Repair and Deduct; Vacating the Premises",
+        """
+(a) If within a reasonable time after written or oral notice to the landlord or his agent, as defined in subdivision (a) of Section 1962, of dilapidations rendering the premises untenantable which the landlord ought to repair, the landlord neglects to do so, the tenant may repair the same himself where the cost of such repairs does not require an expenditure more than one month’s rent of the premises and deduct the expenses of such repairs from the rent when due, or the tenant may vacate the premises, in which case the tenant shall be discharged from further payment of rent, or performance of other conditions as of the date of vacating the premises. This remedy shall not be available to the tenant more than twice in any 12-month period.
+(b) For the purposes of this section, if a tenant acts to repair and deduct after the 30th day following notice, he is presumed to have acted after a reasonable time. The presumption established by this subdivision is a rebuttable presumption affecting the burden of producing evidence and shall not be construed to prevent a tenant from repairing and deducting after a shorter notice if all the circumstances require shorter notice.
+(c) The tenant’s remedy under subdivision (a) shall not be available if the condition was caused by the violation of Section 1929 or 1941.2.
+(d) The remedy provided by this section is in addition to any other remedy provided by this chapter, the rental agreement, or other applicable statutory or common law.
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1941.2",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1941.2",
-        title="Tenant's Duty to Maintain",
-        text="A tenant is responsible for keeping the premises clean and sanitary, properly "
-        "using all electrical, gas, and plumbing fixtures, and not willfully or "
-        "negligently destroying the premises.",
+    _ca(
+        "1942.5",
+        "Retaliation by Lessor",
+        """
+(a) If the lessor retaliates against the lessee because of the exercise by the lessee of the lessee’s rights under this chapter or because of the lessee’s complaint to an appropriate agency as to tenantability of a dwelling, and if the lessee of a dwelling is not in default as to the payment of rent, the lessor may not recover possession of a dwelling in any action or proceeding, cause the lessee to quit involuntarily, increase the rent, or decrease any services within 180 days of any of the following:
+(1) After the date upon which the lessee, in good faith, has given notice pursuant to Section 1942, has provided notice of a suspected bed bug infestation, or has made an oral complaint to the lessor regarding tenantability.
+(2) After the date upon which the lessee, in good faith, has filed a written complaint, or an oral complaint which is registered or otherwise recorded in writing, with an appropriate agency, of which the lessor has notice, for the purpose of obtaining correction of a condition relating to tenantability.
+(3) After the date of an inspection or issuance of a citation, resulting from a complaint described in paragraph (2) of which the lessor did not have notice.
+(4) After the filing of appropriate documents commencing a judicial or arbitration proceeding involving the issue of tenantability.
+(5) After entry of judgment or the signing of an arbitration award, if any, when in the judicial proceeding or arbitration the issue of tenantability is determined adversely to the lessor.
+In each instance, the 180-day period shall run from the latest applicable date referred to in paragraphs (1) to (5), inclusive.
+(b) A lessee may not invoke subdivision (a) more than once in any 12-month period.
+(c) To report, or to threaten to report, the lessee or individuals known to the landlord to be associated with the lessee to immigration authorities is a form of retaliatory conduct prohibited under subdivision (a). This subdivision shall in no way limit the definition of retaliatory conduct prohibited under this section.
+(d) Notwithstanding subdivision (a), it is unlawful for a lessor to increase rent, decrease services, cause a lessee to quit involuntarily, bring an action to recover possession, or threaten to do any of those acts, for the purpose of retaliating against the lessee because the lessee has lawfully organized or participated in a lessees’ association or an organization advocating lessees’ rights or has lawfully and peaceably exercised any rights under the law. In an action brought by or against the lessee pursuant to this subdivision, the lessee shall bear the burden of producing evidence that the lessor’s conduct was, in fact, retaliatory.
+[...]
+(f) This section does not limit in any way the exercise by the lessor of the lessor’s rights under any lease or agreement or any law pertaining to the hiring of property or the lessor’s right to do any of the acts described in subdivision (a) or (d) for any lawful cause. Any waiver by a lessee of the lessee’s rights under this section is void as contrary to public policy.
+[...]
+(h) Any lessor or agent of a lessor who violates this section shall be liable to the lessee in a civil action for all of the following: (1) The actual damages sustained by the lessee. (2) Punitive damages in an amount of not less than one hundred dollars ($100) nor more than two thousand dollars ($2,000) for each retaliatory act where the lessor or agent has been guilty of fraud, oppression, or malice with respect to that act.
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1941.3",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1941.3",
-        title="Door and Window Locks",
-        text="A landlord shall provide and maintain deadbolt locks and other security devices "
-        "as required by this section.",
+    _ca(
+        "1946",
+        "Notice to Terminate a Tenancy of Unspecified Term",
+        """
+(a) A hiring of real property, for a term not specified by the parties, is deemed to be renewed as stated in Section 1945, at the end of the term implied by law unless one of the parties gives written notice to the other of that party’s intention to terminate the same, at least as long before the expiration thereof as the term of the hiring itself, not exceeding 30 days; provided, however, that as to tenancies from month to month either of the parties may terminate the same by giving at least 30 days’ written notice thereof at any time and the rent shall be due and payable to and including the date of termination. It shall be competent for the parties to provide by an agreement at the time the tenancy is created that a notice of the intention to terminate the same may be given at any time not less than seven days before the expiration of the term thereof. The notice herein required shall be given in the manner prescribed in Section 1162 of the Code of Civil Procedure or by sending a copy by certified or registered mail addressed to the other party. [...]
+(b) A landlord or its agent shall not charge a tenant a fee for serving, posting, or otherwise delivering any notice, as described in this section.
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1942",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1942",
-        title="Repair and Deduct Remedy",
-        text="If within a reasonable time after notice the landlord fails to make repairs "
-        "necessary to habitability, the tenant may repair the defects and deduct the cost "
-        "from the rent, not exceeding one month's rent.",
+    _ca(
+        "1946.1",
+        "Notice of Termination of Residential Periodic Tenancy",
+        """
+(a) Notwithstanding Section 1946, a hiring of residential real property or commercial real property by a qualified commercial tenant for a term not specified by the parties, is deemed to be renewed as stated in Section 1945, at the end of the term implied by law unless one of the parties gives written notice to the other of the party’s intention to terminate the tenancy, as provided in this section.
+(b) An owner of a residential dwelling or commercial real property hired by a qualified commercial tenant giving notice pursuant to this section shall give notice at least 60 days prior to the proposed date of termination. A tenant giving notice pursuant to this section shall give notice for a period at least as long as the term of the periodic tenancy prior to the proposed date of termination.
+(c) Notwithstanding subdivision (b), an owner of a residential dwelling or commercial real property hired by a qualified commercial tenant giving notice pursuant to this section shall give notice at least 30 days prior to the proposed date of termination if a tenant or resident has resided in the dwelling or occupied the property for less than one year.
+[...]
+(e) After an owner has given notice of the owner’s intention to terminate the tenancy pursuant to this section, a tenant may also give notice of the tenant’s intention to terminate the tenancy pursuant to this section, provided that the tenant’s notice is for a period at least as long as the term of the periodic tenancy and the proposed date of termination occurs before the owner’s proposed date of termination.
+(f) The notices required by this section shall be given in the manner prescribed in Section 1162 of the Code of Civil Procedure or by sending a copy by certified or registered mail.
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1942.5",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1942.5",
-        title="Retaliatory Eviction and Other Retaliatory Acts",
-        text="A landlord may not retaliate against a tenant by increasing rent, decreasing "
-        "services, or threatening to bring an action to recover possession because the "
-        "tenant has lawfully exercised rights under this chapter.",
+    _ca(
+        "1950.5",
+        "Security Deposits for Residential Rental Property",
+        """
+(a) This section applies to security for a rental agreement for residential property that is used as the dwelling of the tenant.
+[...]
+(e) (1) Subject to paragraph (2), the landlord may claim of the security only those amounts as are reasonably necessary for the purposes specified in subdivision (b).
+(2) (A) The landlord shall not assert a claim against the tenant or the security for damages to the premises or any defective conditions that preexisted the tenancy, for ordinary wear and tear or the effects thereof, whether the wear and tear preexisted the tenancy or occurred during the tenancy, or for the cumulative effects of ordinary wear and tear occurring during any one or more tenancies.
+(B) Claims against the tenant or the security for materials or supplies and for work performed by a contractor, the landlord, or the landlord’s employee shall be limited to a reasonable amount necessary to restore the premises back to the condition it was in at the inception of the tenancy, exclusive of ordinary wear and tear.
+(C) The landlord shall not require a tenant to pay for, or assert a claim against the tenant or the security for, professional carpet cleaning or other professional cleaning services, unless reasonably necessary to return the premises to the condition it was in at the inception of tenancy, exclusive of ordinary wear and tear.
+[...]
+(h) (1) No later than 21 calendar days after the tenant has vacated the premises, but not earlier than the time that either the landlord or the tenant provides a notice to terminate the tenancy under Section 1946 or 1946.1, Section 1161 of the Code of Civil Procedure, or not earlier than 60 calendar days prior to the expiration of a fixed-term lease, the landlord shall furnish the tenant, a copy of an itemized statement indicating the basis for, and the amount of, any security received and the disposition of the security, and shall return any remaining portion of the security to the tenant as follows: [...]
+[...]
+(7) The landlord shall not be entitled to claim any amount of the security if the landlord, in bad faith, fails to comply with this subdivision.
+[...]
+(m) The bad faith claim or retention by a landlord or the landlord’s successors in interest of the security or any portion thereof in violation of this section, or the bad faith demand of replacement of security in violation of subdivision (k), may subject the landlord or the landlord’s successors in interest to statutory damages of up to twice the amount of the security, in addition to actual damages. The court may award damages for bad faith whenever the facts warrant that award, regardless of whether the injured party has specifically requested relief. In an action under this section, the landlord or the landlord’s successors in interest shall have the burden of proof as to the reasonableness of the amounts claimed or the authority pursuant to this section to demand additional security deposits.
+(n) A lease or rental agreement shall not contain a provision characterizing any security as “nonrefundable.”
+""",
     ),
-    StatuteSection(
-        id="ca-civ-1950.5",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1950.5",
-        title="Security Deposits",
-        text="A landlord may demand a security deposit. Within 21 calendar days after the "
-        "tenant has vacated the premises, the landlord shall furnish the tenant a copy of "
-        "an itemized statement and return any remaining portion of the security deposit.",
-    ),
-    StatuteSection(
-        id="ca-civ-1946",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1946",
-        title="Notice for Termination of Tenancy",
-        text="A hiring of real property, for a term not specified by the parties, is deemed to "
-        "be renewed at the end of the term implied by the conduct of the parties unless "
-        "either party gives notice as provided by this section.",
-    ),
-    StatuteSection(
-        id="ca-civ-1946.1",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1946.1",
-        title="Notice Requirements for Tenant",
-        text="A tenant shall give written notice at least 30 days prior to the proposed "
-        "termination date when the tenant has resided in the premises for less than one "
-        "year, and at least 60 days when the tenant has resided for one year or more.",
-    ),
-    StatuteSection(
-        id="ca-civ-1954",
-        jurisdiction="CA",
-        code="Cal. Civ. Code § 1954",
-        title="Entry by Landlord or Agent",
-        text="A landlord may enter the dwelling unit only in the following cases: in case of "
-        "emergency; to make necessary repairs; to show the unit to prospective tenants or "
-        "purchasers; or pursuant to court order. Entry shall be during normal business "
-        "hours and after reasonable written notice.",
+    _ca(
+        "1954",
+        "Landlord's Right of Entry",
+        """
+(a) A landlord may enter the dwelling unit only in the following cases:
+(1) In case of emergency.
+(2) To make necessary or agreed repairs, decorations, alterations or improvements, supply necessary or agreed services, or exhibit the dwelling unit to prospective or actual purchasers, mortgagees, tenants, workers, or contractors or to make an inspection pursuant to subdivision (f) of Section 1950.5.
+(3) When the tenant has abandoned or surrendered the premises.
+(4) Pursuant to court order.
+(5) For the purposes set forth in Chapter 2.5 (commencing with Section 1954.201).
+(6) To comply with the provisions of Article 2.2 (commencing with Section 17973) of Chapter 5 of Part 1.5 of Division 13 of the Health and Safety Code.
+(b) Except in cases of emergency or when the tenant has abandoned or surrendered the premises, entry may not be made during other than normal business hours unless the tenant consents to an entry during other than normal business hours at the time of entry.
+(c) The landlord may not abuse the right of access or use it to harass the tenant.
+(d) (1) Except as provided in subdivision (e), or as provided in paragraph (2) or (3), the landlord shall give the tenant reasonable notice in writing of his or her intent to enter and enter only during normal business hours. The notice shall include the date, approximate time, and purpose of the entry. The notice may be personally delivered to the tenant, left with someone of a suitable age and discretion at the premises, or, left on, near, or under the usual entry door of the premises in a manner in which a reasonable person would discover the notice. Twenty-four hours shall be presumed to be reasonable notice in absence of evidence to the contrary. The notice may be mailed to the tenant. Mailing of the notice at least six days prior to an intended entry is presumed reasonable notice in the absence of evidence to the contrary.
+(2) If the purpose of the entry is to exhibit the dwelling unit to prospective or actual purchasers, the notice may be given orally, in person or by telephone, if the landlord or his or her agent has notified the tenant in writing within 120 days of the oral notice that the property is for sale and that the landlord or agent may contact the tenant orally for the purpose described above. Twenty-four hours is presumed reasonable notice in the absence of evidence to the contrary. The notice shall include the date, approximate time, and purpose of the entry. At the time of entry, the landlord or agent shall leave written evidence of the entry inside the unit.
+(3) The tenant and the landlord may agree orally to an entry to make agreed repairs or supply agreed services. The agreement shall include the date and approximate time of the entry, which shall be within one week of the agreement. In this case, the landlord is not required to provide the tenant a written notice.
+(e) No notice of entry is required under this section: (1) To respond to an emergency. (2) If the tenant is present and consents to the entry at the time of entry. (3) After the tenant has abandoned or surrendered the unit.
+""",
     ),
 ]
 

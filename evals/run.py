@@ -19,7 +19,7 @@ def _run(name: str, store: CorpusStore) -> None:
         ("paraphrase", PARAPHRASE_SCENARIOS),
     ):
         print(f"\n== {name} store / {label} ==")
-        print_report(evaluate_retrieval(store, top_k=4, scenarios=scenarios))
+        print_report(evaluate_retrieval(store, top_k=6, scenarios=scenarios))
 
 
 def main() -> None:

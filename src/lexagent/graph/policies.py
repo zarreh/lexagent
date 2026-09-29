@@ -17,9 +17,11 @@ def _api_key(settings: Settings) -> SecretStr | None:
 
 def build_fast_model(settings: Settings) -> ChatOpenAI:
     """Parse, validate, extract claims — cheap, structured output."""
-    return ChatOpenAI(model=FAST_MODEL, temperature=0, api_key=_api_key(settings))
+    return ChatOpenAI(model=FAST_MODEL, temperature=0, max_retries=6, api_key=_api_key(settings))
 
 
 def build_reasoning_model(settings: Settings) -> ChatOpenAI:
     """Reason and verify citations — the judgement the answer is graded on."""
-    return ChatOpenAI(model=REASONING_MODEL, temperature=0, api_key=_api_key(settings))
+    return ChatOpenAI(
+        model=REASONING_MODEL, temperature=0, max_retries=6, api_key=_api_key(settings)
+    )
