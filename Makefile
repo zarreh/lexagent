@@ -1,7 +1,13 @@
-.PHONY: dev test lint typecheck imports eval up down data docs docs-assets frontend-dev frontend-build frontend-types frontend-e2e
+.PHONY: run dev test lint typecheck imports eval up down data docs docs-assets frontend-dev frontend-build frontend-types frontend-e2e
+
+run:
+	@trap 'kill 0' EXIT INT TERM; \
+	uv run uvicorn lexagent.api.main:app --reload --reload-dir src --port 8000 & \
+	(cd frontend && npm run dev) & \
+	wait
 
 dev:
-	uv run uvicorn lexagent.api.main:app --reload --port 8000
+	uv run uvicorn lexagent.api.main:app --reload --reload-dir src --port 8000
 
 test:
 	uv run pytest -v
