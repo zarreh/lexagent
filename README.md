@@ -37,6 +37,7 @@ cp .env.example .env   # fill in your own OpenAI API key
 (cd frontend && npm install)
 make test              # backend tests
 make eval              # retrieval recall: keyword vs semantic (needs Qdrant for the latter)
+make eval-answers      # full-graph answer eval: citations + LLM-judged faithfulness (needs OpenAI + Qdrant)
 make run               # API + UI together -> open http://localhost:3000
 make dev               # API only (http://localhost:8000/docs, no UI)
 ```

@@ -10,4 +10,4 @@ LexAgent follows the same layered architecture as the portfolio's other agents:
   local corpus store for statutes and precedents.
 - `src/lexagent/schemas/` — Domain state and output models.
 - `src/lexagent/prompts/` — Prompt templates.
-- `evals/` — Canonical retrieval-recall evaluation harness.
+- `evals/` — Retrieval-recall evals (keyword vs semantic) and an LLM-judged answer eval (`make eval-answers`).

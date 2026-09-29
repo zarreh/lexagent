@@ -131,24 +131,112 @@
     "case_id": "SYN-0017",
     "jurisdiction": "TX",
     "issue": "security deposit refund",
-    "facts": "Generic TX facts for security deposit refund.",
-    "holding": "Generic TX holding emphasizing security deposit refund principles.",
+    "facts": "Tenant moved out and gave a forwarding address in writing. Landlord sent no itemized list of deductions and kept the deposit for 60 days.",
+    "holding": "Landlord must refund the deposit or send an itemized list within 30 days of surrender under Sections 92.103 and 92.104. A landlord who misses the deadline without a good-faith basis forfeits the right to keep any of the deposit.",
     "synthetic": true
   },
   {
     "case_id": "SYN-0018",
     "jurisdiction": "TX",
     "issue": "habitability repair",
-    "facts": "Generic TX facts for habitability repair.",
-    "holding": "Generic TX holding emphasizing habitability repair principles.",
+    "facts": "Tenant's air conditioning failed in July. After written notice and current rent payments, the landlord made no repair for six weeks.",
+    "holding": "Failure to repair a condition that materially affects health or safety after notice entitles the tenant to the remedies in Section 92.0581, including terminating the lease or judicial relief.",
     "synthetic": true
   },
   {
     "case_id": "SYN-0019",
     "jurisdiction": "CA",
     "issue": "retaliatory eviction",
-    "facts": "Generic CA facts for retaliatory eviction.",
-    "holding": "Generic CA holding emphasizing retaliatory eviction principles.",
+    "facts": "Tenant requested repairs of a broken furnace. Two weeks later the landlord raised the rent and served a notice of termination.",
+    "holding": "Rent increases or termination shortly after a tenant lawfully asserts habitability rights are retaliatory under Section 1942.5 unless the landlord shows a legitimate independent reason.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0020",
+    "jurisdiction": "TX",
+    "issue": "early termination",
+    "facts": "Month-to-month tenant left with two weeks' oral notice.",
+    "holding": "A monthly tenancy ends only on at least one month's written notice under Section 91.001. Tenant remains liable for rent through the notice period.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0021",
+    "jurisdiction": "TX",
+    "issue": "security deposit refund",
+    "facts": "Landlord deducted $400 for repainting after a two-year tenancy and gave no receipts.",
+    "holding": "Repainting after ordinary use is normal wear and tear and cannot be charged against the deposit under Section 92.102.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0022",
+    "jurisdiction": "TX",
+    "issue": "landlord entry",
+    "facts": "Landlord entered while the tenant was away to respond to a reported gas smell.",
+    "holding": "Entry without prior notice is allowed in an emergency under Section 92.0081.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0023",
+    "jurisdiction": "TX",
+    "issue": "eviction notice",
+    "facts": "Landlord gave a written notice to vacate but filed eviction two days later.",
+    "holding": "Section 24.005 requires the notice period set by the lease, or the statutory default if the lease is silent, to run before an eviction suit is filed.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0024",
+    "jurisdiction": "TX",
+    "issue": "habitability repair",
+    "facts": "Tenant paid for a plumber to fix a burst pipe without first giving the landlord written notice.",
+    "holding": "The repair-and-deduct remedy requires prior written notice and time for the landlord to repair; deduction was disallowed.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0025",
+    "jurisdiction": "CA",
+    "issue": "security deposit refund",
+    "facts": "Landlord returned the deposit 15 days after move-out with an itemized statement showing $250 for damage beyond normal wear.",
+    "holding": "Return within 21 days with an itemized statement satisfies Section 1950.5; deductions for actual damage beyond ordinary wear are permitted.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0026",
+    "jurisdiction": "CA",
+    "issue": "habitability repair",
+    "facts": "Tenant had no hot water for two weeks. Landlord was notified in writing and did not act.",
+    "holding": "Lack of hot running water is a habitability defect under Section 1941. The tenant may repair and deduct up to one month's rent under Section 1942.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0027",
+    "jurisdiction": "CA",
+    "issue": "landlord entry",
+    "facts": "Landlord entered without notice to show the unit to a friend interested in renting it later.",
+    "holding": "Entry to show the unit to prospective tenants still requires reasonable written notice under Section 1954; the entry was improper.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0028",
+    "jurisdiction": "CA",
+    "issue": "retaliatory eviction",
+    "facts": "Landlord ended a tenancy because the tenant's child enrolled in a particular public school.",
+    "holding": "Section 1940.4 bars terminating or penalizing a tenancy based on a child's school enrollment.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0029",
+    "jurisdiction": "CA",
+    "issue": "tenant duty to maintain",
+    "facts": "Tenant left the unit filthy and disabled a smoke detector's battery.",
+    "holding": "Section 1941.2 requires tenants to keep premises clean and sanitary and not to destroy or damage them; landlord may recover the cost of cleaning and repair.",
+    "synthetic": true
+  },
+  {
+    "case_id": "SYN-0030",
+    "jurisdiction": "CA",
+    "issue": "eviction notice",
+    "facts": "Tenant of six months received a 30-day notice from the landlord to end a month-to-month tenancy.",
+    "holding": "For a tenancy under one year, 30 days' written notice suffices under Section 1946.1.",
     "synthetic": true
   }
 ]

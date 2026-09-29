@@ -10,6 +10,7 @@ Two implementations are provided:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -192,6 +193,12 @@ def _index_collection(
     )
 
 
+def _versioned(base: str, records: list[dict[str, str]]) -> str:
+    """Suffix the collection name with a content hash so corpus edits trigger a reindex."""
+    digest = hashlib.sha256(json.dumps(records, sort_keys=True).encode()).hexdigest()[:8]
+    return f"{base}_{digest}"
+
+
 def build_store(settings: Settings) -> CorpusStore:
     """Semantic Qdrant store when reachable and embeddable, else the keyword store."""
     local = LocalCorpusStore()
@@ -207,19 +214,13 @@ def build_store(settings: Settings) -> CorpusStore:
         embeddings = OpenAIEmbeddings(
             model="text-embedding-3-small", api_key=SecretStr(settings.openai_api_key)
         )
+        statute_name = _versioned(settings.statute_collection, local.records("statute"))
+        precedent_name = _versioned(settings.precedent_collection, local.records("precedent"))
+        _index_collection(client, embeddings, statute_name, local.records("statute"), "statute")
         _index_collection(
-            client, embeddings, settings.statute_collection, local.records("statute"), "statute"
+            client, embeddings, precedent_name, local.records("precedent"), "precedent"
         )
-        _index_collection(
-            client,
-            embeddings,
-            settings.precedent_collection,
-            local.records("precedent"),
-            "precedent",
-        )
-        store = QdrantCorpusStore(
-            client, embeddings, settings.statute_collection, settings.precedent_collection
-        )
+        store = QdrantCorpusStore(client, embeddings, statute_name, precedent_name)
     except Exception:  # noqa: BLE001
         logger.warning("qdrant_unavailable_using_keyword_store", exc_info=True)
         return local

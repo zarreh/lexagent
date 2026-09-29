@@ -8,7 +8,6 @@ real court opinion. Each record is tagged `synthetic: true`.
 from __future__ import annotations
 
 import json
-import random
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -204,27 +203,140 @@ def _ca_precedents() -> list[PrecedentSummary]:
     ]
 
 
-def _cross_jurisdiction_precedents() -> list[PrecedentSummary]:
-    """A few cases chosen randomly from a fixed seed to test both-jurisdiction retrieval."""
-    rng = random.Random(42)
-    issues = ["security deposit refund", "habitability repair", "retaliatory eviction"]
-    results: list[PrecedentSummary] = []
-    for i, issue in enumerate(issues, start=17):
-        jurisdiction = rng.choice(["TX", "CA"])
-        results.append(
-            PrecedentSummary(
-                case_id=_case_id(i),
-                jurisdiction=jurisdiction,
-                issue=issue,
-                facts=f"Generic {jurisdiction} facts for {issue}.",
-                holding=f"Generic {jurisdiction} holding emphasizing {issue} principles.",
-            )
+def _additional_precedents() -> list[PrecedentSummary]:
+    def case(n: int, j: str, issue: str, facts: str, holding: str) -> PrecedentSummary:
+        return PrecedentSummary(
+            case_id=_case_id(n), jurisdiction=j, issue=issue, facts=facts, holding=holding
         )
-    return results
+
+    return [
+        case(
+            17,
+            "TX",
+            "security deposit refund",
+            "Tenant moved out and gave a forwarding address in writing. Landlord sent no "
+            "itemized list of deductions and kept the deposit for 60 days.",
+            "Landlord must refund the deposit or send an itemized list within 30 days of "
+            "surrender under Sections 92.103 and 92.104. A landlord who misses the deadline "
+            "without a good-faith basis forfeits the right to keep any of the deposit.",
+        ),
+        case(
+            18,
+            "TX",
+            "habitability repair",
+            "Tenant's air conditioning failed in July. After written notice and current rent "
+            "payments, the landlord made no repair for six weeks.",
+            "Failure to repair a condition that materially affects health or safety after "
+            "notice entitles the tenant to the remedies in Section 92.0581, including "
+            "terminating the lease or judicial relief.",
+        ),
+        case(
+            19,
+            "CA",
+            "retaliatory eviction",
+            "Tenant requested repairs of a broken furnace. Two weeks later the landlord "
+            "raised the rent and served a notice of termination.",
+            "Rent increases or termination shortly after a tenant lawfully asserts habitability "
+            "rights are retaliatory under Section 1942.5 unless the landlord shows a "
+            "legitimate independent reason.",
+        ),
+        case(
+            20,
+            "TX",
+            "early termination",
+            "Month-to-month tenant left with two weeks' oral notice.",
+            "A monthly tenancy ends only on at least one month's written notice under Section "
+            "91.001. Tenant remains liable for rent through the notice period.",
+        ),
+        case(
+            21,
+            "TX",
+            "security deposit refund",
+            "Landlord deducted $400 for repainting after a two-year tenancy and gave no receipts.",
+            "Repainting after ordinary use is normal wear and tear and cannot be charged "
+            "against the deposit under Section 92.102.",
+        ),
+        case(
+            22,
+            "TX",
+            "landlord entry",
+            "Landlord entered while the tenant was away to respond to a reported gas smell.",
+            "Entry without prior notice is allowed in an emergency under Section 92.0081.",
+        ),
+        case(
+            23,
+            "TX",
+            "eviction notice",
+            "Landlord gave a written notice to vacate but filed eviction two days later.",
+            "Section 24.005 requires the notice period set by the lease, or the statutory "
+            "default if the lease is silent, to run before an eviction suit is filed.",
+        ),
+        case(
+            24,
+            "TX",
+            "habitability repair",
+            "Tenant paid for a plumber to fix a burst pipe without first giving the landlord "
+            "written notice.",
+            "The repair-and-deduct remedy requires prior written notice and time for the "
+            "landlord to repair; deduction was disallowed.",
+        ),
+        case(
+            25,
+            "CA",
+            "security deposit refund",
+            "Landlord returned the deposit 15 days after move-out with an itemized statement "
+            "showing $250 for damage beyond normal wear.",
+            "Return within 21 days with an itemized statement satisfies Section 1950.5; "
+            "deductions for actual damage beyond ordinary wear are permitted.",
+        ),
+        case(
+            26,
+            "CA",
+            "habitability repair",
+            "Tenant had no hot water for two weeks. Landlord was notified in writing and did "
+            "not act.",
+            "Lack of hot running water is a habitability defect under Section 1941. The tenant "
+            "may repair and deduct up to one month's rent under Section 1942.",
+        ),
+        case(
+            27,
+            "CA",
+            "landlord entry",
+            "Landlord entered without notice to show the unit to a friend interested in "
+            "renting it later.",
+            "Entry to show the unit to prospective tenants still requires reasonable written "
+            "notice under Section 1954; the entry was improper.",
+        ),
+        case(
+            28,
+            "CA",
+            "retaliatory eviction",
+            "Landlord ended a tenancy because the tenant's child enrolled in a particular "
+            "public school.",
+            "Section 1940.4 bars terminating or penalizing a tenancy based on a child's school "
+            "enrollment.",
+        ),
+        case(
+            29,
+            "CA",
+            "tenant duty to maintain",
+            "Tenant left the unit filthy and disabled a smoke detector's battery.",
+            "Section 1941.2 requires tenants to keep premises clean and sanitary and not to "
+            "destroy or damage them; landlord may recover the cost of cleaning and repair.",
+        ),
+        case(
+            30,
+            "CA",
+            "eviction notice",
+            "Tenant of six months received a 30-day notice from the landlord to end a "
+            "month-to-month tenancy.",
+            "For a tenancy under one year, 30 days' written notice suffices under Section 1946.1.",
+        ),
+    ]
 
 
 def all_precedents() -> list[PrecedentSummary]:
-    return _tx_precedents() + _ca_precedents() + _cross_jurisdiction_precedents()
+    return _tx_precedents() + _ca_precedents() + _additional_precedents()
 
 
 def write_precedents_json(path: Path) -> None:

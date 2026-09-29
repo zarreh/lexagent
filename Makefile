@@ -1,4 +1,4 @@
-.PHONY: qdrant run dev test lint typecheck imports eval up down data docs docs-assets frontend-dev frontend-build frontend-types frontend-e2e
+.PHONY: eval-answers qdrant run dev test lint typecheck imports eval up down data docs docs-assets frontend-dev frontend-build frontend-types frontend-e2e
 
 qdrant:
 	docker compose up -d qdrant
@@ -28,6 +28,9 @@ imports:
 
 eval:
 	uv run python -m evals.run
+
+eval-answers: qdrant
+	uv run python -m evals.answer_eval
 
 up:
 	docker compose up --build
