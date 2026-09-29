@@ -96,10 +96,51 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Citation
+         * @description A single citation inside a claim.
+         */
+        Citation: {
+            /** Source Id */
+            source_id: string;
+            /**
+             * Corpus
+             * @enum {string}
+             */
+            corpus: "statute" | "precedent";
+            /** Quoted Span */
+            quoted_span?: string | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * LegalAnswer
+         * @description Final structured answer returned to the user.
+         */
+        LegalAnswer: {
+            /** Rights */
+            rights: string;
+            /** Obligations */
+            obligations: string;
+            /** Reasoning */
+            reasoning: string;
+            /** Citations */
+            citations: components["schemas"]["Citation"][];
+            /**
+             * Confidence
+             * @enum {string}
+             */
+            confidence: "high" | "medium" | "low";
+            /** Referral Triggered */
+            referral_triggered: boolean;
+            /**
+             * Disclaimer
+             * @default This is research-oriented information, not legal advice. Consult a licensed attorney for advice on your specific situation.
+             */
+            disclaimer: string;
         };
         /** QueryCreatedResponse */
         QueryCreatedResponse: {
@@ -127,10 +168,7 @@ export interface components {
             updated_at: string;
             /** Outcome Kind */
             outcome_kind: string | null;
-            /** Answer */
-            answer: {
-                [key: string]: unknown;
-            } | null;
+            answer: components["schemas"]["LegalAnswer"] | null;
             /** Error */
             error: string | null;
         };

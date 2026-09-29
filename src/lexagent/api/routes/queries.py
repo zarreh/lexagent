@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import uuid
 from collections.abc import AsyncGenerator
 from typing import Annotated
@@ -16,6 +15,7 @@ from lexagent.api.deps import get_lexagent_graph, get_run_store, settings_depend
 from lexagent.api.run_executor import execute_query
 from lexagent.api.schemas import QueryResponse
 from lexagent.graph.builder import LexAgentGraph
+from lexagent.schemas.legal import LegalAnswer
 from lexagent.settings import Settings
 from lexagent.store.run_store import RunStore
 
@@ -54,7 +54,7 @@ def get_query(
     run = run_store.get_run(run_id)
     if run is None:
         raise HTTPException(status_code=404, detail="Query not found")
-    answer = json.loads(run.answer_json) if run.answer_json else None
+    answer = LegalAnswer.model_validate_json(run.answer_json) if run.answer_json else None
     return QueryResponse(
         id=run.id,
         question=run.question,

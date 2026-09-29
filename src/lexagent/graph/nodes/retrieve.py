@@ -15,11 +15,10 @@ def build_retrieve_node(
         parsed = state["parsed_query"]
         jurisdiction = parsed.jurisdiction if parsed is not None else "unknown"
         query = state["question"]
-        statutes = store.search(query, jurisdiction, "statute", top_k=4)
-        # Precedent summaries use issue words; fall back to the issue_type if the
-        # raw question has no keyword overlap with the synthetic holdings.
-        precedent_query = f"{query} {parsed.issue_type}" if parsed is not None else query
-        precedents = store.search(precedent_query, jurisdiction, "precedent", top_k=4)
+        # The parsed issue words bridge lay phrasing ("broken heater") to statute vocabulary.
+        enriched = f"{query} {parsed.issue_type} {parsed.intent}" if parsed is not None else query
+        statutes = store.search(enriched, jurisdiction, "statute", top_k=4)
+        precedents = store.search(enriched, jurisdiction, "precedent", top_k=4)
         return {
             "retrieved_sources": statutes + precedents,
             "retrieval_attempts": state["retrieval_attempts"] + 1,

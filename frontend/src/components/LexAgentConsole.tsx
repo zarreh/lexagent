@@ -57,7 +57,7 @@ export function LexAgentConsole() {
   const [question, setQuestion] = useState(EXAMPLES[0]);
   const [runId, setRunId] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "running" | "completed" | "failed">("idle");
-  const [events, setEvents] = useState<NodeEvent[]>([]);
+  const [events, setEvents] = useState<(NodeEvent & { at: string })[]>([]);
   const [result, setResult] = useState<QueryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const eventsEndRef = useRef<HTMLDivElement>(null);
@@ -82,7 +82,7 @@ export function LexAgentConsole() {
         id,
         {
           onEvent: (event) => {
-            setEvents((prev) => [...prev, event]);
+            setEvents((prev) => [...prev, { ...event, at: new Date().toISOString() }]);
           },
           onEnd: async () => {
             const final = await getQuery(id);
@@ -165,7 +165,7 @@ export function LexAgentConsole() {
               >
                 <div className="flex items-center gap-2">
                   <NodeBadge node={event.node} />
-                  <span className="text-xs text-neutral-400">{formatTimestamp(new Date().toISOString())}</span>
+                  <span className="text-xs text-neutral-400">{formatTimestamp(event.at)}</span>
                 </div>
                 {event.data && Object.keys(event.data).length > 0 && (
                   <pre className="mt-2 max-h-32 overflow-auto rounded bg-neutral-50 p-2 text-xs text-neutral-700 dark:bg-neutral-950 dark:text-neutral-300">
@@ -196,6 +196,24 @@ export function LexAgentConsole() {
               );
             })}
           </dl>
+          {result.answer.citations.length > 0 && (
+            <div className="mt-4">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-green-800 dark:text-green-300">
+                Citations
+              </h3>
+              <ul className="mt-1 space-y-2">
+                {result.answer.citations.map((citation) => (
+                  <li key={citation.source_id} className="text-sm text-green-900 dark:text-green-100">
+                    <code className="rounded bg-green-100 px-1 py-0.5 text-xs dark:bg-green-900">
+                      {citation.source_id}
+                    </code>{" "}
+                    <span className="text-xs text-green-800 dark:text-green-300">({citation.corpus})</span>
+                    {citation.quoted_span && <blockquote className="mt-1 border-l-2 border-green-300 pl-3 italic">{citation.quoted_span}</blockquote>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </section>
       )}
 

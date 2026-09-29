@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Literal, Protocol
@@ -60,8 +61,8 @@ class LocalCorpusStore:
         return data if isinstance(data, list) else []
 
     def _score(self, query: str, text: str) -> int:
-        query_terms = set(query.lower().split())
-        text_terms = set(text.lower().split())
+        query_terms = set(re.findall(r"[a-z0-9]+", query.lower()))
+        text_terms = set(re.findall(r"[a-z0-9]+", text.lower()))
         return len(query_terms & text_terms)
 
     def search(

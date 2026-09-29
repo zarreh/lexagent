@@ -92,32 +92,42 @@ export function streamQueryEvents(
   handlers: QueryEventHandlers
 ): () => void {
   const source = new EventSource(`${API_BASE}/api/queries/${runId}/events`);
+  let finished = false;
 
-  source.addEventListener("message", (messageEvent) => {
-    if (messageEvent.type === "done") {
-      source.close();
-      handlers.onEnd();
-      return;
-    }
-    let data: Record<string, unknown> | null = null;
-    if (messageEvent.data) {
+  // The server emits named SSE events, which never reach a "message" listener.
+  const nodeNames = [
+    "parse_query",
+    "retrieve",
+    "validate_retrieval",
+    "reason",
+    "extract_claims",
+    "verify_citations",
+    "publish",
+    "refuse",
+    "budget_exceeded",
+  ];
+  for (const node of nodeNames) {
+    source.addEventListener(node, (messageEvent) => {
+      let data: Record<string, unknown> | null = null;
       try {
-        data = JSON.parse(messageEvent.data) as Record<string, unknown>;
+        data = JSON.parse((messageEvent as MessageEvent<string>).data) as Record<string, unknown>;
       } catch {
         data = null;
       }
-    }
-    handlers.onEvent({ node: messageEvent.type, data });
-  });
+      handlers.onEvent({ node, data });
+    });
+  }
 
-  source.addEventListener("error", () => {
+  source.addEventListener("done", () => {
+    finished = true;
     source.close();
-    handlers.onError(new Error("Event stream closed unexpectedly"));
+    handlers.onEnd();
   });
 
+  // The browser also fires onerror when the server closes the stream normally.
   source.onerror = () => {
     source.close();
-    handlers.onError(new Error("Event stream error"));
+    if (!finished) handlers.onError(new Error("Event stream error"));
   };
 
   return () => source.close();
