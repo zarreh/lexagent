@@ -34,20 +34,26 @@ frontend build + e2e, Docker compose up. Not deployed publicly yet.
 ```bash
 uv sync --extra dev
 cp .env.example .env   # fill in your own OpenAI API key
+(cd frontend && npm install)
 make test              # backend tests
 make eval              # canonical retrieval recall eval
-make dev               # http://localhost:8000/healthz
-cd frontend && npm install && npm run dev   # http://localhost:3000
+make run               # API + UI together -> open http://localhost:3000
+make dev               # API only (http://localhost:8000/docs, no UI)
 ```
+
+Retrieval defaults to the bundled keyword store (`LocalCorpusStore`); the
+Qdrant-backed store is implemented but not wired into the default app.
 
 ### Production stack (Docker + Caddy)
 
 ```bash
 cp .env.example .env   # fill in real secrets
-cd frontend && npm install && npm run build   # exports static site to frontend/dist
-cd ..
-docker compose -f compose.prod.yaml up -d      # http://localhost
+make frontend-build    # exports static site to frontend/dist
+docker compose -f compose.prod.yaml up -d --build   # http://localhost
 ```
+
+After rebuilding `frontend/dist`, recreate Caddy so it sees the new files:
+`docker compose -f compose.prod.yaml up -d --force-recreate caddy`.
 
 For a real domain, replace `:80` in `Caddyfile` with `lexagent.zarreh.ai` and
 remove `auto_https off` so Caddy provisions TLS.
