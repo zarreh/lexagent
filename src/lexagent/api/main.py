@@ -27,3 +27,12 @@ app.add_middleware(
 app.include_router(health.router)
 app.include_router(ask.router)
 app.include_router(queries.router)
+
+
+@app.get("/", include_in_schema=False)
+def root() -> dict[str, str]:
+    return {
+        "service": "LexAgent API",
+        "ui": "http://localhost:3000 (start with `make run`)",
+        "docs": "/docs",
+    }

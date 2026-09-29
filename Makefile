@@ -1,6 +1,7 @@
 .PHONY: run dev test lint typecheck imports eval up down data docs docs-assets frontend-dev frontend-build frontend-types frontend-e2e
 
 run:
+	@echo "UI: http://localhost:3000   (API: http://localhost:8000/docs)"
 	@trap 'kill 0' EXIT INT TERM; \
 	uv run uvicorn lexagent.api.main:app --reload --reload-dir src --port 8000 & \
 	(cd frontend && npm run dev) & \
