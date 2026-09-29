@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from typing import Literal
 
 from langchain_core.messages import HumanMessage
@@ -31,22 +31,25 @@ def _feedback_text(judgments: list[ClaimJudgment]) -> str:
 
 def build_verify_citations_node(
     chain: CitationVerifierChain,
-) -> Callable[[LexAgentState], dict[str, object]]:
-    def verify_citations_node(state: LexAgentState) -> dict[str, object]:
-        raw = chain.invoke(
+) -> Callable[[LexAgentState], Awaitable[dict[str, object]]]:
+    async def verify_citations_node(state: LexAgentState) -> dict[str, object]:
+        wrapper = await chain.ainvoke(
             {
                 "claims": state["claims"],
                 "sources": [s.model_dump() for s in state["retrieved_sources"]],
             }
         )
-        judgments = [ClaimJudgment(**r) for r in raw]  # type: ignore[arg-type]
+        judgments = wrapper.judgments
         unsupported = sum(1 for j in judgments if not j.supported)
         report = CitationReport(
             claims=judgments,
             unsupported=unsupported,
             confidence=_confidence_for(unsupported),
         )
-        delta: dict[str, object] = {"citation_report": report}
+        delta: dict[str, object] = {
+            "citation_report": report,
+            "verification_attempts": state["verification_attempts"] + 1,
+        }
         if unsupported > 0:
             delta["messages"] = [HumanMessage(content=_feedback_text(judgments))]
         return delta

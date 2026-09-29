@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from langchain_core.messages import AIMessage
+from langchain_core.messages import HumanMessage
 
 from lexagent.schemas.state import LexAgentState
 
@@ -25,8 +25,8 @@ def route_after_validate(
     state: LexAgentState,
 ) -> Literal["reason", "retrieve"]:
     # If a feedback message was added, retrieval was not relevant.
-    if state["messages"] and isinstance(state["messages"][-1], AIMessage):
-        # Human feedback is added only on irrelevance; loop back to retrieve.
+    if state["messages"] and isinstance(state["messages"][-1], HumanMessage):
+        # Feedback is added only on irrelevance; loop back to retrieve.
         return "retrieve" if state["retrieval_attempts"] < MAX_RETRIEVAL_ATTEMPTS else "reason"
     return "reason"
 
@@ -39,4 +39,4 @@ def route_after_verify(
         return "reason"
     if report.unsupported == 0:
         return "publish"
-    return "reason" if state["retrieval_attempts"] < MAX_VERIFICATION_PASSES else "publish"
+    return "reason" if state["verification_attempts"] < MAX_VERIFICATION_PASSES else "publish"

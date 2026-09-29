@@ -1,6 +1,11 @@
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.state import CompiledStateGraph
 
+from lexagent.graph.chains.citation_verifier import build_citation_verifier_chain
+from lexagent.graph.chains.claim_extractor import build_claim_extractor_chain
+from lexagent.graph.chains.parse_query import build_parse_query_chain
+from lexagent.graph.chains.reason import build_reason_chain
+from lexagent.graph.chains.validate_retrieval import build_validate_retrieval_chain
 from lexagent.graph.edges import (
     route_after_parse,
     route_after_validate,
@@ -48,15 +53,21 @@ def build_lexagent_graph(
     fast_model = build_fast_model(settings)
     reasoning_model = build_reasoning_model(settings)
 
+    parse_query_chain = build_parse_query_chain(fast_model)
+    validate_retrieval_chain = build_validate_retrieval_chain(fast_model)
+    reason_chain = build_reason_chain(reasoning_model)
+    claim_extractor_chain = build_claim_extractor_chain(fast_model)
+    citation_verifier_chain = build_citation_verifier_chain(reasoning_model)
+
     workflow = StateGraph(LexAgentState)
     # mypy cannot resolve add_node overloads against factory-returned
     # Callables; each node is unit-tested directly. Cast to RunnableChain.
-    workflow.add_node("parse_query", build_parse_query_node(fast_model))  # type: ignore[arg-type]
+    workflow.add_node("parse_query", build_parse_query_node(parse_query_chain))  # type: ignore[arg-type]
     workflow.add_node("retrieve", build_retrieve_node(store))  # type: ignore[arg-type]
-    workflow.add_node("validate_retrieval", build_validate_retrieval_node(fast_model))  # type: ignore[arg-type]
-    workflow.add_node("reason", build_reason_node(reasoning_model))  # type: ignore[arg-type]
-    workflow.add_node("extract_claims", build_extract_claims_node(fast_model))  # type: ignore[arg-type]
-    workflow.add_node("verify_citations", build_verify_citations_node(reasoning_model))  # type: ignore[arg-type]
+    workflow.add_node("validate_retrieval", build_validate_retrieval_node(validate_retrieval_chain))  # type: ignore[arg-type]
+    workflow.add_node("reason", build_reason_node(reason_chain))  # type: ignore[arg-type]
+    workflow.add_node("extract_claims", build_extract_claims_node(claim_extractor_chain))  # type: ignore[arg-type]
+    workflow.add_node("verify_citations", build_verify_citations_node(citation_verifier_chain))  # type: ignore[arg-type]
     workflow.add_node("publish", publish_node)
     workflow.add_node("refuse", refuse_node)
     workflow.add_node("budget_exceeded", budget_exceeded_node)

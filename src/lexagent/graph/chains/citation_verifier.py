@@ -9,7 +9,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from lexagent.graph.protocols import CitationVerifierChain
 from lexagent.prompts.loader import load_prompt
-from lexagent.schemas.legal import ClaimJudgment
+from lexagent.schemas.legal import ClaimJudgmentList
 
 
 def build_citation_verifier_chain(model: BaseChatModel) -> CitationVerifierChain:
@@ -24,5 +24,5 @@ def build_citation_verifier_chain(model: BaseChatModel) -> CitationVerifierChain
     )
     return cast(
         CitationVerifierChain,
-        prompt | model.with_structured_output(list[ClaimJudgment]),
+        prompt | model.with_structured_output(ClaimJudgmentList),
     )

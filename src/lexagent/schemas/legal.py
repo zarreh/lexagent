@@ -43,12 +43,31 @@ class Claim(BaseModel):
     citations: list[Citation] = Field(default_factory=list)
 
 
+class ClaimList(BaseModel):
+    """Wrapper because langchain structured output needs a Pydantic model."""
+
+    claims: list[Claim]
+
+
 class ClaimJudgment(BaseModel):
     """Per-claim verification result."""
 
     claim_id: str
     supported: bool
     reason: str
+
+
+class ClaimJudgmentList(BaseModel):
+    """Wrapper because langchain structured output needs a Pydantic model."""
+
+    judgments: list[ClaimJudgment]
+
+
+class RetrievalValidation(BaseModel):
+    """Relevance judgment for retrieved sources."""
+
+    relevant: bool
+    expansion_query: str = ""
 
 
 class CitationReport(BaseModel):

@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir uv
 
 COPY pyproject.toml README.md ./
 COPY src ./src
+COPY data ./data
 RUN uv venv /opt/venv && \
     . /opt/venv/bin/activate && \
     uv pip install --no-cache .
@@ -17,8 +18,10 @@ RUN useradd --create-home --uid 1000 appuser
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 COPY src ./src
+COPY data ./data
 ENV PATH="/opt/venv/bin:$PATH" \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    LEXAGENT_DATA_DIR=/app/data/sample
 
 USER appuser
 

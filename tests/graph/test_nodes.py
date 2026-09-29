@@ -1,3 +1,5 @@
+import asyncio
+
 from lexagent.graph.nodes.parse_query import build_parse_query_node
 from lexagent.graph.nodes.refuse import refuse_node
 from lexagent.graph.nodes.retrieve import build_retrieve_node
@@ -6,7 +8,7 @@ from lexagent.schemas.legal import LegalAnswer, ParsedQuery
 from lexagent.schemas.state import LexAgentState
 
 
-def test_parse_query_node_returns_parsed_query() -> None:
+async def test_parse_query_node_returns_parsed_query() -> None:
     expected = ParsedQuery(
         intent="refund timeline",
         jurisdiction="TX",
@@ -18,6 +20,9 @@ def test_parse_query_node_returns_parsed_query() -> None:
         def invoke(self, input: dict[str, str]) -> ParsedQuery:
             return expected
 
+        async def ainvoke(self, input: dict[str, str]) -> ParsedQuery:
+            return expected
+
     node = build_parse_query_node(_FakeChain())
     state: LexAgentState = {
         "messages": [],
@@ -25,6 +30,7 @@ def test_parse_query_node_returns_parsed_query() -> None:
         "parsed_query": None,
         "retrieved_sources": [],
         "retrieval_attempts": 0,
+        "verification_attempts": 0,
         "draft_answer": "",
         "claims": [],
         "citation_report": None,
@@ -32,11 +38,13 @@ def test_parse_query_node_returns_parsed_query() -> None:
         "refusal_reason": None,
         "started_at": 0.0,
     }
-    result = node(state)
+    coroutine = node(state)
+    assert asyncio.iscoroutine(coroutine)
+    result: dict[str, object] = await coroutine
     assert result["parsed_query"] == expected
 
 
-def test_retrieve_node_searches_both_corpora() -> None:
+async def test_retrieve_node_searches_both_corpora() -> None:
     store = LocalCorpusStore()
     node = build_retrieve_node(store)
     state: LexAgentState = {
@@ -47,6 +55,7 @@ def test_retrieve_node_searches_both_corpora() -> None:
         ),
         "retrieved_sources": [],
         "retrieval_attempts": 0,
+        "verification_attempts": 0,
         "draft_answer": "",
         "claims": [],
         "citation_report": None,
@@ -54,7 +63,9 @@ def test_retrieve_node_searches_both_corpora() -> None:
         "refusal_reason": None,
         "started_at": 0.0,
     }
-    result = node(state)
+    coroutine = node(state)
+    assert asyncio.iscoroutine(coroutine)
+    result: dict[str, object] = await coroutine
     sources = result["retrieved_sources"]
     assert isinstance(sources, list)
     assert len(sources) > 0
@@ -69,6 +80,7 @@ def test_refuse_node_returns_referral() -> None:
         "parsed_query": None,
         "retrieved_sources": [],
         "retrieval_attempts": 0,
+        "verification_attempts": 0,
         "draft_answer": "",
         "claims": [],
         "citation_report": None,

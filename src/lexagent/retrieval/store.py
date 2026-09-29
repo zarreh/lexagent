@@ -11,6 +11,7 @@ Two implementations are provided:
 from __future__ import annotations
 
 import json
+import os
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Literal, Protocol
@@ -35,7 +36,8 @@ class LocalCorpusStore:
 
     def __init__(self, sample_dir: Path | None = None) -> None:
         if sample_dir is None:
-            sample_dir = Path(__file__).parent.parent.parent.parent / "data" / "sample"
+            default = Path(__file__).parent.parent.parent.parent / "data" / "sample"
+            sample_dir = Path(os.environ.get("LEXAGENT_DATA_DIR", default))
         self._statutes = self._load_statutes(sample_dir / "statutes.jsonl")
         self._precedents = self._load_precedents(sample_dir / "precedents.json")
 

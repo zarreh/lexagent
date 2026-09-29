@@ -28,6 +28,7 @@ class LexAgentState(TypedDict):
     parsed_query: ParsedQuery | None
     retrieved_sources: Annotated[list[RetrievedSource], lambda a, b: a + b]
     retrieval_attempts: int
+    verification_attempts: int
     draft_answer: str
     claims: list[dict[str, object]]
     citation_report: CitationReport | None

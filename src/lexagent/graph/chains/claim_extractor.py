@@ -9,7 +9,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from lexagent.graph.protocols import ClaimExtractorChain
 from lexagent.prompts.loader import load_prompt
-from lexagent.schemas.legal import Claim
+from lexagent.schemas.legal import ClaimList
 
 
 def build_claim_extractor_chain(model: BaseChatModel) -> ClaimExtractorChain:
@@ -22,4 +22,4 @@ def build_claim_extractor_chain(model: BaseChatModel) -> ClaimExtractorChain:
             ),
         ]
     )
-    return cast(ClaimExtractorChain, prompt | model.with_structured_output(list[Claim]))
+    return cast(ClaimExtractorChain, prompt | model.with_structured_output(ClaimList))

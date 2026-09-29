@@ -47,6 +47,7 @@ def _initial_state(question: str) -> LexAgentState:
         parsed_query=None,
         retrieved_sources=[],
         retrieval_attempts=0,
+        verification_attempts=0,
         draft_answer="",
         claims=[],
         citation_report=None,
@@ -73,7 +74,11 @@ async def execute_query(
 ) -> None:
     structlog.contextvars.bind_contextvars(correlation_id=run_id)
     try:
-        callbacks = build_tracing_callbacks(settings.langsmith_api_key, settings.langsmith_project)
+        callbacks = []
+        if settings.langsmith_api_key:
+            callbacks = build_tracing_callbacks(
+                settings.langsmith_api_key, settings.langsmith_project
+            )
         final_state: dict[str, object] = {}
         sequence = 0
 
@@ -89,7 +94,14 @@ async def execute_query(
             if node_name not in _GRAPH_NODE_NAMES:
                 continue
 
-            output: dict[str, object] = event.get("data", {}).get("output", {}) or {}
+            output: object = event.get("data", {}).get("output", {}) or {}
+            if not isinstance(output, dict):
+                logger.warning(
+                    "skipping_non_dict_node_output",
+                    node_name=node_name,
+                    output_type=type(output).__name__,
+                )
+                continue
             payload = json.dumps(output, default=_json_default)
             run_store.append_event(run_id, sequence, node_name, payload)
             sequence += 1

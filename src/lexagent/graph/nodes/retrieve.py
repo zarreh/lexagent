@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 
 from lexagent.retrieval.store import CorpusStore
 from lexagent.schemas.state import LexAgentState
@@ -10,8 +10,8 @@ from lexagent.schemas.state import LexAgentState
 
 def build_retrieve_node(
     store: CorpusStore,
-) -> Callable[[LexAgentState], dict[str, object]]:
-    def retrieve_node(state: LexAgentState) -> dict[str, object]:
+) -> Callable[[LexAgentState], Awaitable[dict[str, object]]]:
+    async def retrieve_node(state: LexAgentState) -> dict[str, object]:
         parsed = state["parsed_query"]
         jurisdiction = parsed.jurisdiction if parsed is not None else "unknown"
         query = state["question"]

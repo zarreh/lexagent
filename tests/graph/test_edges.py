@@ -10,6 +10,7 @@ def _state(**overrides: object) -> LexAgentState:
         "parsed_query": None,
         "retrieved_sources": [],
         "retrieval_attempts": 0,
+        "verification_attempts": 0,
         "draft_answer": "",
         "claims": [],
         "citation_report": None,
@@ -37,7 +38,7 @@ def test_route_after_verify_unsupported_returns_reason() -> None:
         unsupported=1,
         confidence="low",
     )
-    state = _state(citation_report=report, retrieval_attempts=1)
+    state = _state(citation_report=report, verification_attempts=1)
     assert route_after_verify(state) == "reason"
 
 
