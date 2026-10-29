@@ -3,19 +3,16 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
-import structlog
-from pydantic import BaseModel
 from zarreh_agentkit.observability import build_tracing_callbacks
+from zarreh_agentkit.runs import execute_run
 
 from lexagent.graph.builder import LexAgentGraph
-from lexagent.observability import get_logger
 from lexagent.schemas.legal import LegalAnswer
 from lexagent.schemas.state import LexAgentState
 from lexagent.settings import Settings
 from lexagent.store.run_store import RunStore
-
-logger = get_logger(__name__)
 
 _GRAPH_NODE_NAMES = frozenset(
     {
@@ -30,12 +27,6 @@ _GRAPH_NODE_NAMES = frozenset(
         "budget_exceeded",
     }
 )
-
-
-def _json_default(value: object) -> object:
-    if isinstance(value, BaseModel):
-        return value.model_dump(mode="json")
-    return str(value)
 
 
 def _initial_state(question: str) -> LexAgentState:
@@ -72,51 +63,23 @@ async def execute_query(
     run_store: RunStore,
     settings: Settings,
 ) -> None:
-    structlog.contextvars.bind_contextvars(correlation_id=run_id)
-    try:
-        callbacks = []
-        if settings.langsmith_api_key:
-            callbacks = build_tracing_callbacks(
-                settings.langsmith_api_key, settings.langsmith_project
-            )
-        final_state: dict[str, object] = {}
-        sequence = 0
-
-        async for event in graph.astream_events(
-            _initial_state(question),
-            version="v2",
-            config={"callbacks": callbacks, "metadata": {"correlation_id": run_id}},
-        ):
-            if event["event"] != "on_chain_end":
-                continue
-            metadata = event.get("metadata") or {}
-            node_name = metadata.get("langgraph_node")
-            if node_name not in _GRAPH_NODE_NAMES:
-                continue
-
-            output: object = event.get("data", {}).get("output", {}) or {}
-            if not isinstance(output, dict):
-                logger.warning(
-                    "skipping_non_dict_node_output",
-                    node_name=node_name,
-                    output_type=type(output).__name__,
-                )
-                continue
-            payload = json.dumps(output, default=_json_default)
-            run_store.append_event(run_id, sequence, node_name, payload)
-            sequence += 1
-            final_state.update(output)
-
+    def finalize(final_state: dict[str, Any]) -> None:
         answer = final_state.get("answer")
         if isinstance(answer, LegalAnswer):
-            outcome = _outcome_kind(answer)
             run_store.complete_run(
-                run_id, outcome, json.dumps(answer.model_dump(mode="json"), default=_json_default)
+                run_id, _outcome_kind(answer), json.dumps(answer.model_dump(mode="json"))
             )
         elif final_state.get("refusal_reason"):
             run_store.fail_run(run_id, str(final_state.get("refusal_reason")))
         else:
             run_store.fail_run(run_id, "Graph finished without an answer.")
-    except Exception as exc:  # noqa: BLE001
-        logger.exception("query_failed", run_id=run_id)
-        run_store.fail_run(run_id, str(exc))
+
+    await execute_run(
+        run_id=run_id,
+        graph=graph,
+        graph_input=_initial_state(question),
+        store=run_store,
+        finalize=finalize,
+        callbacks=build_tracing_callbacks(settings.langsmith_api_key, settings.langsmith_project),
+        node_names=_GRAPH_NODE_NAMES,
+    )

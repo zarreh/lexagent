@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from zarreh_agentkit.runs import RunEvent
+
 
 @dataclass(frozen=True)
 class RunRecord:
@@ -17,8 +19,4 @@ class RunRecord:
     error: str | None
 
 
-@dataclass(frozen=True)
-class RunEvent:
-    sequence: int
-    node: str
-    payload_json: str
+__all__ = ["RunEvent", "RunRecord"]

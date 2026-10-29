@@ -28,11 +28,13 @@ class _FakeGraph:
         _ = version, config
         yield {
             "event": "on_chain_end",
+            "name": "parse_query",
             "metadata": {"langgraph_node": "parse_query"},
             "data": {"output": {"parsed_query": {"question": state.get("question", "")}}},
         }
         yield {
             "event": "on_chain_end",
+            "name": "retrieve",
             "metadata": {"langgraph_node": "retrieve"},
             "data": {"output": {"retrieved_sources": []}},
         }
@@ -46,6 +48,7 @@ class _FakeGraph:
         )
         yield {
             "event": "on_chain_end",
+            "name": "publish",
             "metadata": {"langgraph_node": "publish"},
             "data": {"output": {"answer": answer}},
         }
